@@ -16,13 +16,13 @@ using namespace std;
  *  O conjunto de terminais são os valores de entrada e constantes, utilizadas
  *  nas funções para retornar valores.
  *  Correspondencia dos caracteres:
- *  	- * : Multiplicação x*y
- *  	- / : Divisão x/y
- *  	- + : Adição x+y
- *  	- - : Subtração x-y
- *  	- s : seno sen(x)
- *  	- c : cosseno cos(x)
- *  	- ^ : expoente x^y
+ *  	* : Multiplicação x*y
+ *  	/ : Divisão x/y
+ *  	+ : Adição x+y
+ *  	- : Subtração x-y
+ *  	s : seno sen(x)
+ *  	c : cosseno cos(x)
+ *  	^ : expoente x^y
  */
 
 const char func_set[] = {'*', '/', '+', '-', 's', 'c', '^'};
