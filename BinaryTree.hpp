@@ -81,7 +81,7 @@ bool is_func(char c) {
 
 class node{
 	/** Classe que representa o nó das árvores. Um nó tem as seguintes proprie-
-	 *  dades: valor, filho esquerdo (esq) e filho direito (dir). Todas as ope-
+	 *  dades: valor, filho esquerdo (esq) e filho direito (dir).
 	 */ 
 	
 	public:
