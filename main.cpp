@@ -14,7 +14,7 @@ int main() {
 
 	population *pop = new population(pop_size);
 
-	pop->imprime_pop();
+	pop->print_pop();
 
   	delete pop;
 		
