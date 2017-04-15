@@ -3,11 +3,14 @@
 
 #include <random>
 #include <cstdlib>
+#include <math.h>
 
 #include <iostream>
 
 #include <queue>
 #include <stack>
+
+#define PI 3.141592;
 
 using namespace std;
 
@@ -16,13 +19,13 @@ using namespace std;
  *  O conjunto de terminais são os valores de entrada e constantes, utilizadas
  *  nas funções para retornar valores.
  *  Correspondencia dos caracteres:
- *  	* : Multiplicação x*y
- *  	/ : Divisão x/y
- *  	+ : Adição x+y
- *  	- : Subtração x-y
- *  	s : seno sen(x)
- *  	c : cosseno cos(x)
- *  	^ : expoente x^y
+ *  	- * : Multiplicação x*y
+ *  	- / : Divisão x/y
+ *  	- + : Adição x+y
+ *  	- - : Subtração x-y
+ *  	- s : seno sen(x)
+ *  	- c : cosseno cos(x)
+ *  	- ^ : expoente x^y
  */
 
 const char func_set[] = {'*', '/', '+', '-', 's', 'c', '^'};
@@ -30,6 +33,10 @@ const char term_set[] = {'x', 'y', 'z', '3'};
  
 const int func_set_size = 7; //sizeof(func_set)/sizeof(func_set[0])
 const int term_set_size = 4; //sizeof(term_set)/sizeof(term_set[0])
+
+double globalX=1.0;
+double globalY=1.0;
+double globalZ=1.0;
 
 
 
@@ -64,17 +71,92 @@ char rand_everything() {
 		return rand_term_set();
 }
 
-bool is_func(char c) {
+int is_func(char c) {
 	/** Recebe como parametro um caractere e verifica se ele pertence ao con-
-	 *  junto de funções. Retorna verdadeiro caso pertença, e falso caso não
-	 *  pertença.
+	 *  junto de funções. Caso não pertenca, retorna 0. Caso pertenca, retorna
+	 *  a aridade da função (1 para funções unárias e 2 para funções binárias).
+	 *  OBS: é importante lembrar que zero é considerado como falso, então
+	 *  esta função pode ser usada também para ver se é verdadeiro ou não.
 	 */
 	 
-	for (int i=0; i<func_set_size; i++)
-		if (c==func_set[i])
-			return true;
-			
-	return false;
+	switch (c){
+		case '+':
+			return 2;
+		case '-':
+			return 2;
+		case '*':
+			return 2;
+		case '/':
+			return 2;
+		case '^':
+			return 2;
+		case 's':
+			return 1;
+		case 'c':
+			return 1;
+	}
+
+	return 0;
+}
+
+bool is_term(char c) {
+	/** Recebe como parametro um caractere e verifica se ele pertence ao con-
+	 *  junto de terminais.
+	 */
+	 
+	 for (int i=0; i<term_set_size; i++)
+	 	if (c==term_set[i])
+	 		return true;
+	 
+	 return false;
+}
+
+double number(char c){
+	/** Função recebe um caractere que representa um número e retorna o seu
+	 *  equivalente numérico.
+	 */
+	 
+	switch (c) {
+		case 'x':
+			return globalX;
+		case 'y':
+			return globalY;
+		case 'z':
+			return globalZ;
+		case '3':
+			return 3;
+		default:
+			return 0;
+	}
+}
+
+double opera (double n, char c) {
+
+	n = n*PI;
+	switch (c) {
+		case 's':
+			return sin(n/180.0);
+		case 'c':
+			return cos(n/180.0);
+		default:
+			cout << "erro no opera (unario)" << endl;
+			return -1;
+	}
+}
+
+double opera (double n, double m, char c) {
+	switch(c) {
+		case '*':
+			return m*n;
+		case '+':
+			return m+n;
+		case '/':
+			return n/m;
+		case '-':
+			return n-m;
+		case '^':
+			return pow(n, m);
+	}
 }
 
 
@@ -94,6 +176,7 @@ class node{
 		~node();
 		
 		void print_node();
+		double recupera_valor();
 };
 
 node::node(){
@@ -102,9 +185,19 @@ node::node(){
 	 *  deve-se modificá-lo posteriormente. Os métodos relacionados aos nós
 	 *  (tais como crossover e mutação) pertencem à esta classe, e os métodos
 	 *  relacionados com a população geral pertencem à classe população.
+	 *  Se o nó criado for uma função binária, seus dois filhos serão gerados.
+	 *  Se for uma função unária, seu único flho será gerado (no nó esquerdo).
 	 */
 
 	this->value = rand_everything();
+	
+	if (is_func(this->value)==1){
+		this->esq = new node();
+	}
+	else if (is_func(this->value)==2){
+		this->esq = new node();
+		this->dir = new node();
+	}
 }
 
 node::~node(){
@@ -128,6 +221,29 @@ void node::print_node() {
 		this->dir->print_node();
 
 	cout << this->value;
+}
+
+double node::recupera_valor() {
+	/** Função que ao ser chamada retorna o resultado da expressão da arvore.
+	 *  Quando um nó não tem os dois resultados prontos, ela é passada
+	 *  recursivamente para os filhos que ainda não resolveram as operações
+	 *  para então poder calcular o valor do nó.
+	 */
+	 
+	if (is_term(this->value)) {
+		return number(this->value);
+	}
+	else {
+		if (is_func(this->value)==1) {
+			return opera(this->esq->recupera_valor(), this->value );
+		}
+		else if (is_func(this->value)==2){
+			return (opera( this->esq->recupera_valor(), this->dir->recupera_valor(), this->value) );
+		}
+		else {
+			cout << "erro no recupera_valor" << endl;
+		}
+	}
 }
 
 
