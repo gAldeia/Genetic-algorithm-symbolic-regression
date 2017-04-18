@@ -1,11 +1,9 @@
-//obs: o random que estou usando é da bibio stdlib, preciso adaptar para usar
-//o da biblio random do C++
-
 #include <random>
 #include <cstdlib>
 #include <math.h>
 
 #include <iostream>
+#include <iomanip>
 
 #include <queue>
 #include <stack>
@@ -28,42 +26,35 @@ using namespace std;
  *  	- ^ : expoente x^y
  */
 
-const char func_set[] = {'*', '/', '+', '-', 's', 'c', '^'};
-const char term_set[] = {'x', 'y', 'z', '3'};
- 
-const int func_set_size = 7; //sizeof(func_set)/sizeof(func_set[0])
-const int term_set_size = 4; //sizeof(term_set)/sizeof(term_set[0])
+//as funções unárias ficam no começo do vetor, para facilitar reconhecimento
+const char   func_set[] = {'s', 'c', '*', '/', '+', '-','^'};
+const char   term_set[] = {'x', 'y', '3'};
+const double term_values[] = {-3.0, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0};
 
-double globalX=1.0;
-double globalY=1.0;
-double globalZ=1.0;
+const int    func_set_size = 7;    //sizeof(func_set)/sizeof(func_set[0]);
+const int    term_set_size = 3;    //sizeof(term_set)/sizeof(term_set[0]);
+const int    term_values_size = 7; //sizeof(term_values)/sizeof(term_values[0]);
 
 
 
 char rand_func_set(){
-	/** A função não recebe nada como parametro, e retorna um caractere
-	 *  escolhido "aleatoriamente" do conjunto de funções, que representa
-	 *  alguma operação (descrita no início do código).
-	 */
 	 
+	//retorna um elemento aleatório do conjunto de funções 
+	
 	return func_set[ rand() % func_set_size ];
 }
 
 char rand_term_set(){
-	/** A função não recebe parametro, e retorna um caractere "aleatório" do
-	 *  conjunto de terminais, podendo ser uma constante ou uma variável. A
-	 *  função é ideal para criar/completar as folhas das árvores geradas.
-	 */
+	
+	//retorna um elemento aleatório do conjunto de terminais
 
 	return term_set[ rand() % term_set_size ];
 }
 
 char rand_everything() {
-	/** A função não recebe parametro, e tem 50% de chance de retornar um 
-	 *  caractere pertencente ao conjunto de funções e 50% de retornar um 
-	 *  caractere pertencente ao conjunto de terminais. Ideal para a criação
-	 *  de nós que não precisam ter um tipo específico (função ou terminal)
-	 */
+	
+	//retorna um elemento aleatório de qualquer um dos conjuntos, com uma chance
+	//de 50% de retornar do conjunto de terminal e 50% do conjunto de funções.
 	 
 	if (rand() % 2 ==0)
 		return rand_func_set();
@@ -72,57 +63,29 @@ char rand_everything() {
 }
 
 int is_func(char c) {
-	/** Recebe como parametro um caractere e verifica se ele pertence ao con-
-	 *  junto de funções. Caso não pertenca, retorna 0. Caso pertenca, retorna
-	 *  a aridade da função (1 para funções unárias e 2 para funções binárias).
-	 *  OBS: é importante lembrar que zero é considerado como falso, então
-	 *  esta função pode ser usada também para ver se é verdadeiro ou não.
-	 */
-	 
-	switch (c){
-		case '+':
-			return 2;
-		case '-':
-			return 2;
-		case '*':
-			return 2;
-		case '/':
-			return 2;
-		case '^':
-			return 2;
-		case 's':
-			return 1;
-		case 'c':
-			return 1;
-	}
+	
+	//retorna a aridade da função que o caractere passado representa. se o
+	//caractere for um número, retorna zero.
+	
+	//os operadores unarios vao ate o indice 1 do vetor.
+	for (int i=0; i<func_set_size; i++) 
+		if (c==func_set[i])
+			return i<2 ? 1 : 2;
 
 	return 0;
 }
 
-bool is_term(char c) {
-	/** Recebe como parametro um caractere e verifica se ele pertence ao con-
-	 *  junto de terminais.
-	 */
-	 
-	 for (int i=0; i<term_set_size; i++)
-	 	if (c==term_set[i])
-	 		return true;
-	 
-	 return false;
-}
-
-double number(char c){
-	/** Função recebe um caractere que representa um número e retorna o seu
-	 *  equivalente numérico.
-	 */
+double numbera(char c, double x = 1.0, double y = 1.0){
+	
+	//retorna o valor numerico que um caractere representa. para variaveis,
+	//deve ser passado o valor elas podem assumir (ou, caso contrário, será
+	//atribuido 1 para elas).
 	 
 	switch (c) {
 		case 'x':
-			return globalX;
+			return x;
 		case 'y':
-			return globalY;
-		case 'z':
-			return globalZ;
+			return y;
 		case '3':
 			return 3;
 		default:
@@ -132,26 +95,30 @@ double number(char c){
 
 double opera (double n, char c) {
 
+	//função que resolve operações unárias. deve ser passado um numero e 
+	//a função unária
+
 	n = n*PI;
+	
 	switch (c) {
 		case 's':
 			return sin(n/180.0);
 		case 'c':
 			return cos(n/180.0);
-		default:
-			cout << "erro no opera (unario)" << endl;
-			return -1;
 	}
 }
 
 double opera (double n, double m, char c) {
+
+	//função que resolve operações binárias.
+
 	switch(c) {
 		case '*':
 			return m*n;
 		case '+':
 			return m+n;
 		case '/':
-			return n/m;
+			return m!=0 ? n/m : 1;
 		case '-':
 			return n-m;
 		case '^':
@@ -162,86 +129,94 @@ double opera (double n, double m, char c) {
 
 
 class node{
-	/** Classe que representa o nó das árvores. Um nó tem as seguintes proprie-
-	 *  dades: valor, filho esquerdo (esq) e filho direito (dir).
-	 */ 
 	
-	public:
+	private:
+		//as variaveis dos nós são private para
+		//evitar acessos de outros métodos.
+		
 		char value;
 		
 		node *esq = NULL;
 		node *dir = NULL;
-		
-		node();
+	
+	public:		
+		node(int deepth);
 		~node();
 		
 		void print_node();
-		double recupera_valor();
+		double recupera_valor(double x, double y);
 };
 
-node::node(){
-	/** O construtor sempre cria um nó com um valor aleatório. Caso seja
-	 *  necessário especificar algum tipo (função ou terminal) para o nó,
-	 *  deve-se modificá-lo posteriormente. Os métodos relacionados aos nós
-	 *  (tais como crossover e mutação) pertencem à esta classe, e os métodos
-	 *  relacionados com a população geral pertencem à classe população.
-	 *  Se o nó criado for uma função binária, seus dois filhos serão gerados.
-	 *  Se for uma função unária, seu único flho será gerado (no nó esquerdo).
-	 */
-
-	this->value = rand_everything();
+node::node(int deepth){
 	
-	if (is_func(this->value)==1){
-		this->esq = new node();
+	//o construtor recebe a profundidade máxima que seus filhos podem ter
+	//e cria uma árvore aleatoriamente.
+	
+	//verifico se já atingi a profundidade máxima da árvore. caso não,
+	//a criação de um novo nó não precisa ser restringida.
+	if (deepth>1) {
+		this->value = rand_everything();
+
+		//se o nó for unário, precisará de um único valor
+		if (is_func(this->value)==1)
+			this->dir = new node(deepth-1); 
+	
+		//caso seja binário, precisará de 2.
+		else if (is_func(this->value)==2){
+			this->esq = new node(deepth-1);
+			this->dir = new node(deepth-1);
+		}
 	}
-	else if (is_func(this->value)==2){
-		this->esq = new node();
-		this->dir = new node();
-	}
+	else
+		this->value = rand_term_set();
 }
 
 node::~node(){
-	/** O destrutor DEVERÁ desalocar a memória de todos os filhos, já que
-	 *  será chamado quando a raiz for destruida.
-	 */
+
+	delete this->esq;
+	this->esq = NULL;
+
+	delete this->dir;
+	this->dir = NULL;
 }
 
 void node::print_node() {
-	/** Função que imprime o nó que a chamou. a impressão é feita da seguinte
-	 *  forma: primeiro, é conferido se o nó tem um filho à esquerda - se exis-
-	 *  tir, ele chama recursivamente a função à esquerda. Depois, ele chama
-	 *  recursivamente para a direita. Por fim, ele imprime seu valor.
-	 *  Isso faz com que a impressão seja feita na notação pós-fixa (RPN).
-	 */
-	 
-	if (this->esq!=NULL)
-		this->esq->print_node();
-			
-	if (this->dir!=NULL)
-		this->dir->print_node();
 
-	cout << this->value;
-}
+	//imprime na notação usual a expressão da árvore.
 
-double node::recupera_valor() {
-	/** Função que ao ser chamada retorna o resultado da expressão da arvore.
-	 *  Quando um nó não tem os dois resultados prontos, ela é passada
-	 *  recursivamente para os filhos que ainda não resolveram as operações
-	 *  para então poder calcular o valor do nó.
-	 */
-	 
-	if (is_term(this->value)) {
-		return number(this->value);
+	if (this->value=='s') {
+		cout << "sin("; this->dir->print_node(); cout << ")";	
+	}
+	else if (this->value=='c') {
+		cout << "cos("; this->dir->print_node(); cout << ")";	
+	}
+	else if (is_func(this->value)==2) {
+			cout << "("; this->esq->print_node();
+			cout << this->value;
+			this->dir->print_node(); cout << ")";	
 	}
 	else {
+		cout << this->value;
+	}
+}
+
+double node::recupera_valor(double x = 1.0, double y = 1.0) {
+	
+	//Função que ao ser chamada retorna o resultado da expressão da arvore que
+	//a chamou.
+	 
+	if (is_func(this->value)==0) {
+		return numbera(this->value, x, y);
+	}
+	else {
+		//a função opera é sobrecarregada para calcular dependendo da aridade
 		if (is_func(this->value)==1) {
-			return opera(this->esq->recupera_valor(), this->value );
+			return opera(this->dir->recupera_valor(), this->value );
 		}
 		else if (is_func(this->value)==2){
-			return (opera( this->esq->recupera_valor(), this->dir->recupera_valor(), this->value) );
-		}
-		else {
-			cout << "erro no recupera_valor" << endl;
+			return (opera( this->esq->recupera_valor(),
+						   this->dir->recupera_valor(),
+						   this->value) );
 		}
 	}
 }
@@ -249,81 +224,43 @@ double node::recupera_valor() {
 
 
 class population{
-	/** Essa é a classe população. Tem como atributos apenas um array de nós
-	 *  e um inteiro para armazenar o tamanho da população. Todas os métodos
-	 *  que funcionam sobre a população deverão pertencer a ela (como fitness
-	 *  e chamada da próxima geração, por exemplo). Os métodos que ocorrem no
-	 *  "DNA" pertencem à classe node (tais como crossover e mutação).
-	 */
 
 	public:
 		node **pop;
 		
 		int pop_size;
 		
-		population(int pop_size);
+		population(int pop_size, int pop_deepth);
 		~population();
 		
 		void print_pop();
 };
 
-population::population(int pop_size){
+population::population(int pop_size, int pop_deepth){
 
-	/** o construtor define o tamanho da população e cria um array do 
-	 *  tamanho da população, iniciando em cada um dos elementos um 
-	 *  novo nó, que será a raiz de cada indivíduo. É importante lembrar que
-	 *  a criação de um nó sempre gera um valor aleatório de qualquer um dos
-	 *  conjuntos (terminal e função).
-	 */
+	//o construtor cria a população com o tamanho de individuos e a profundi-
+	//dade máxima passada.
 
 	this->pop_size = pop_size;	 
 	this->pop = new node*[pop_size];
 	
 	for (int i=0; i<pop_size; i++)
-		this->pop[i] = new node();
+		this->pop[i] = new node(pop_deepth);
 }
 
 population::~population(){
-	/** O destrutor deleta todas as raízes, enquanto o destrutor da raiz
-	 *  deleta todos os seus respectivos filhos. Após isso, ele deleta o
-	 *  ponteiro do array e morre.
-	 */
 
 	for (int i=0; i<this->pop_size; i++)
 		delete this->pop[i];
-	
 	delete this->pop;
 }
 
 void population::print_pop() {
-	/** Para imprimir a população, é precisso imprimir individuo por individuo, 
-	 *  então o método apenas imprime o número do individuo e chama a função
-	 *  print_node().
-	 */
 
+	//imprime, em cada linha, a equação de cada um dos individuos.
 	for (int i=0; i<this->pop_size; i++) {
 		cout << "individuo " << i << ": ";
 		pop[i]->print_node();
 		cout << endl;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
