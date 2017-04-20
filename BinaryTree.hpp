@@ -155,48 +155,48 @@ node::node(int deepth){
 	//verifico se já atingi a profundidade máxima da árvore. caso não,
 	//a criação de um novo nó não precisa ser restringida.
 	if (deepth>1) {
-		this->value = rand_everything();
+		value = rand_everything();
 
 		//se o nó for unário, precisará de um único valor
 		if (is_func(this->value)==1)
-			this->dir = new node(deepth-1); 
+			dir = new node(deepth-1); 
 	
 		//caso seja binário, precisará de 2.
 		else if (is_func(this->value)==2){
-			this->esq = new node(deepth-1);
-			this->dir = new node(deepth-1);
+			esq = new node(deepth-1);
+			dir = new node(deepth-1);
 		}
 	}
 	else
-		this->value = rand_term_set();
+		value = rand_term_set();
 }
 
 node::~node(){
 
-	delete this->esq;
-	this->esq = NULL;
+	delete esq;
+	esq = NULL;
 
-	delete this->dir;
-	this->dir = NULL;
+	delete dir;
+	dir = NULL;
 }
 
 void node::print_node() {
 
 	//imprime na notação usual a expressão da árvore.
 
-	if (this->value=='s') {
-		cout << "sin("; this->dir->print_node(); cout << ")";	
+	if (value=='s') {
+		cout << "sin("; dir->print_node(); cout << ")";	
 	}
-	else if (this->value=='c') {
-		cout << "cos("; this->dir->print_node(); cout << ")";	
+	else if (value=='c') {
+		cout << "cos("; dir->print_node(); cout << ")";	
 	}
-	else if (is_func(this->value)==2) {
-			cout << "("; this->esq->print_node();
-			cout << this->value;
-			this->dir->print_node(); cout << ")";	
+	else if (is_func(value)==2) {
+			cout << "("; esq->print_node();
+			cout << value;
+			dir->print_node(); cout << ")";	
 	}
 	else {
-		cout << this->value;
+		cout << value;
 	}
 }
 
@@ -205,18 +205,18 @@ double node::recupera_valor(double x = 1.0, double y = 1.0) {
 	//Função que ao ser chamada retorna o resultado da expressão da arvore que
 	//a chamou.
 	 
-	if (is_func(this->value)==0) {
-		return numbera(this->value, x, y);
+	if (is_func(value)==0) {
+		return numbera(value, x, y);
 	}
 	else {
 		//a função opera é sobrecarregada para calcular dependendo da aridade
-		if (is_func(this->value)==1) {
-			return opera(this->dir->recupera_valor(), this->value );
+		if (is_func(value)==1) {
+			return opera(dir->recupera_valor(), value );
 		}
-		else if (is_func(this->value)==2){
-			return (opera( this->esq->recupera_valor(),
-						   this->dir->recupera_valor(),
-						   this->value) );
+		else if (is_func(value)==2){
+			return (opera( esq->recupera_valor(),
+						   dir->recupera_valor(),
+						   value) );
 		}
 	}
 }
@@ -241,24 +241,24 @@ population::population(int pop_size, int pop_deepth){
 	//o construtor cria a população com o tamanho de individuos e a profundi-
 	//dade máxima passada.
 
-	this->pop_size = pop_size;	 
-	this->pop = new node*[pop_size];
+	pop_size = pop_size;	 
+	pop = new node*[pop_size];
 	
 	for (int i=0; i<pop_size; i++)
-		this->pop[i] = new node(pop_deepth);
+		pop[i] = new node(pop_deepth);
 }
 
 population::~population(){
 
-	for (int i=0; i<this->pop_size; i++)
-		delete this->pop[i];
-	delete this->pop;
+	for (int i=0; i<pop_size; i++)
+		delete pop[i];
+	delete[] pop;
 }
 
 void population::print_pop() {
 
 	//imprime, em cada linha, a equação de cada um dos individuos.
-	for (int i=0; i<this->pop_size; i++) {
+	for (int i=0; i<pop_size; i++) {
 		cout << "individuo " << i << ": ";
 		pop[i]->print_node();
 		cout << endl;
