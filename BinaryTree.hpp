@@ -12,92 +12,127 @@
 
 using namespace std;
 
-/** O conjunto de funções é composto por operações unárias e binárias, e pre-
- *  cisam sempre de pelo menos um numero real para retornarem um valor.
- *  O conjunto de terminais são os valores de entrada e constantes, utilizadas
- *  nas funções para retornar valores.
+/** Array de funções: conjunto de caracteres que representam operações 
+ *  unárias e binárias.
+ *  Array de terminais: conjunto de caracteres que representam incognitas
+ *  e constantes.
  *  Correspondencia dos caracteres:
- *  	- * : Multiplicação x*y
- *  	- / : Divisão x/y
- *  	- + : Adição x+y
- *  	- - : Subtração x-y
- *  	- s : seno sen(x)
- *  	- c : cosseno cos(x)
- *  	- ^ : expoente x^y
+ *  	* : Multiplicação x*y
+ *  	/ : Divisão x/y
+ *  	+ : Adição x+y
+ *  	- : Subtração x-y
+ *  	s : seno sen(x)
+ *  	c : cosseno cos(x)
+ *  	^ : expoente x^y
  */
-
-//as funções unárias ficam no começo do vetor, para facilitar reconhecimento
 const char   func_set[] = {'s', 'c', '*', '/', '+', '-','^'};
-const char   term_set[] = {'x', 'y', '3'};
-const double term_values[] = {-3.0, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0};
+const char   term_set[] = {'x', '1'};
 
-const int    func_set_size = 7;    //sizeof(func_set)/sizeof(func_set[0]);
-const int    term_set_size = 3;    //sizeof(term_set)/sizeof(term_set[0]);
-const int    term_values_size = 7; //sizeof(term_values)/sizeof(term_values[0]);
+const int    func_set_size = 7;  //sizeof(func_set)/sizeof(func_set[0]);
+const int    term_set_size = 2;  //sizeof(term_set)/sizeof(term_set[0]);
 
 
 
-char rand_func_set(){
-	 
-	//retorna um elemento aleatório do conjunto de funções 
+//---------------------------------------------------------------------------//
+//                                                                           //
+//                    Sessão de funções de utilidades                        //
+//                                                                           //
+//---------------------------------------------------------------------------//
+ 
+char rand_func_set() {
+
+	/** Função que retorna um elemento do conjunto de funções.
+	 *  Parâmetros:
+	 *  	---
+	 *  Retorno:
+	 *  	(Char) elemento aleatório do conjunto pré definido de funções.
+	 */
 	
 	return func_set[ rand() % func_set_size ];
 }
 
-char rand_term_set(){
-	
-	//retorna um elemento aleatório do conjunto de terminais
+char rand_term_set() {
 
+	/** Função que retorna um elemento do conjunto de terminais.
+	 *  Parâmetros:
+	 *  	---
+	 *  Retorno:
+	 *  	(Char) elemento aleatório do conjunto pré definido de terminais.
+	 */
+	 
 	return term_set[ rand() % term_set_size ];
 }
 
 char rand_everything() {
-	
-	//retorna um elemento aleatório de qualquer um dos conjuntos, com uma chance
-	//de 50% de retornar do conjunto de terminal e 50% do conjunto de funções.
+
+	/** Função que retorna um elemento de qualquer um dos conjuntos.
+	 *  A probabilidade de cada conjunto ser sorteado é igual.
+	 *  Parâmetros:
+	 *  	---
+	 *  Retorno:
+	 *  	(Char) aleatório, podendo ser tanto do conjunto de funções 
+	 *  	quanto do conjunto de terminais.
+	 */
 	 
-	if (rand() % 2 ==0)
+	if (rand() % 10 >= 5)
 		return rand_func_set();
 	else
 		return rand_term_set();
 }
 
-int is_func(char c) {
+int aridade(char c) {
+
+	/** Função que retorna a quantidade de números que a operação representada
+	 *  pelo caractere passado precisa.
+	 *  Parâmetros:
+	 *  	Char 'c', contido no conjunto de funções.
+	 *  Retorno:
+	 *  	(Int) Aridade da função, podendo ser 1 ou 2.
+	 * 		Caso o caractere não esteja no conjunto de funções, retorna 0.
+	 */
 	
-	//retorna a aridade da função que o caractere passado representa. se o
-	//caractere for um número, retorna zero.
+	//neste caso, eu sei que as funções unárias estão até o elemento 1
+	//do vetor, mas isso tem que ser ajustado para funcionar de forma
+	//dinâmica.
 	
-	//os operadores unarios vao ate o indice 1 do vetor.
 	for (int i=0; i<func_set_size; i++) 
 		if (c==func_set[i])
 			return i<2 ? 1 : 2;
-
 	return 0;
 }
 
-double numbera(char c, double x = 1.0, double y = 1.0){
+double numbera(char c, double x = 1.0) {
 	
-	//retorna o valor numerico que um caractere representa. para variaveis,
-	//deve ser passado o valor elas podem assumir (ou, caso contrário, será
-	//atribuido 1 para elas).
+	/** Função que recebe um caractere do conjunto de terminais e retorna
+	 *  sua conversão para um valor numérico.
+	 *  Parâmetros:
+	 *  	Char 'c', c contido no conjunto de terminais;
+	 *  	Double 'x', representando o valor que x pode assumir;
+	 *  Retorno:
+	 *  	(Double) Número equivalente ao caractere passado.
+	 */
 	 
 	switch (c) {
 		case 'x':
 			return x;
-		case 'y':
-			return y;
-		case '3':
-			return 3;
+		case '1':
+			return 1;
 		default:
+			cout << "erro numbera" << endl;
 			return 0;
 	}
 }
 
-double opera (double n, char c) {
+double opera(double n, char c) {
 
-	//função que resolve operações unárias. deve ser passado um numero e 
-	//a função unária
-
+	/** Função que retorna o resultado de uma operação unária.
+	 *  Parâmetros:
+	 * 		Double 'n', número a ser utilizado na operação;
+	 *  	Char 'c', contido no conjunto de funções.
+	 *  Retorno:
+	 *  	(Double) Resultado da operação unária.
+	 */
+	
 	n = n*PI;
 	
 	switch (c) {
@@ -108,17 +143,24 @@ double opera (double n, char c) {
 	}
 }
 
-double opera (double n, double m, char c) {
+double opera(double n, double m, char c) {
 
-	//função que resolve operações binárias.
-
+	/** Função que retorna o resultado de uma operação binária.
+	 *  Parâmetros:
+	 * 		Double 'n', número a ser utilizado na operação;
+	 *		Double 'm', segundo número a ser utilizado na operação;
+	 *  	Char 'c', contido no conjunto de funções.
+	 *  Retorno:
+	 *  	(Double) Resultado da operação binária.
+	 */
+	 
 	switch(c) {
 		case '*':
 			return m*n;
 		case '+':
 			return m+n;
 		case '/':
-			return m!=0 ? n/m : 1;
+			return m!=0 ? n/m : 0;
 		case '-':
 			return n-m;
 		case '^':
@@ -128,46 +170,125 @@ double opera (double n, double m, char c) {
 
 
 
+//---------------------------------------------------------------------------//
+//                                                                           //
+//                 Sessão de declaração das classes principais               //
+//                                                                           //
+//---------------------------------------------------------------------------//
+
 class node{
 	
+	/** Classe que compõe todos os nós de todas as árvores binárias.
+	 *  Guarda as seguintes informações:
+	 *  	value    : char que representa sua natureza (terminal ou operador);
+	 * 		deepth   : int que representa sua profundidade máxima;
+	 * 		esq, dir : ponteiros de nós, que apontam para seus possíveis filhos.
+	 *  Possui os seguintes métodos:
+	 *  	print_node     : Imprime recursivamente a equação da árvore.
+	 *  	recupera_valor : retorna o resultado da operação da árvore.
+	 * 		recupera_mse   : retorna o mse da árvore.
+	 *		recupera_copia : retorna um ponteiro para uma cópia da árvore.
+	 * 		mutation       : percorre a árvore, aplicando mutações sobre ela.
+	 * 		crossover_with : recebe endereço de outra árvore, e efetua trocas
+	 *					   : aleatórias de nós.
+	 */
+	 
 	private:
-		//as variaveis dos nós são private para
-		//evitar acessos de outros métodos.
-		
 		char value;
+		int  deepth = 0;
 		
 		node *esq = NULL;
 		node *dir = NULL;
-	
+		
 	public:		
 		node(int deepth);
 		~node();
 		
-		void print_node();
-		double recupera_valor(double x, double y);
+		void   print_node();
+		double recupera_valor(double x);
+		double recupera_mse(const double *target_values, const int n);
+		node * recupera_copia();
+		void   mutation(double mutation_rate);
+		void   crossover_with(node *pai, double crossover_rate);
 };
+
+class population{
+
+	/** classe que cria e gerencia um array de árvores binárias (população).
+	 *  Guarda as seguintes informações:
+	 * 		pop        : array de árvores principal;
+	 * 		pop_backup : cópia de segurança do array de árvores principal;
+	 * 		pop_size   : tamanho da população;
+	 * 		pop_deepth : profundidade máxima que as árvores podem assumir;
+	 * 	Possui os seguintes métodos:
+	 * 		print_pop    : chama o método print_node em cada uma das árvores;
+	 * 		print_backup : chama o print_node nas árvores do pop_backup; 
+	 * 		fitness      : chama o mse em todas as árvores e retorna a árvore
+	 * 					   que obteve o menor valor do mse;
+	 * 		mutation     : chama o método mutation em cada uma das árvores;
+	 *		set_backup   : copia o array pop no array pop_backup;
+	 */
+	
+	private: 
+		int pop_size;
+		int pop_deepth;
+	 
+	public:
+		node **pop;
+		node **pop_backup;
+		
+		population(int pop_size, int pop_deepth);
+		~population();
+		
+		void print_pop();
+		void print_backup();
+		node fitness(const double *target_values, const int n);
+		void mutation(double mutation_rate);
+		void set_backup();
+};
+
+
+
+//---------------------------------------------------------------------------//
+//                                                                           //
+//                  Sessão de implementação das funções                      //
+//                                                                           //
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+//----------------------FUNÇÕES DA CLASSE NODE-------------------------------//
+//---------------------------------------------------------------------------//
 
 node::node(int deepth){
 	
-	//o construtor recebe a profundidade máxima que seus filhos podem ter
-	//e cria uma árvore aleatoriamente.
+	/** Função construtora, que recebe a profundidade máxima e cria uma árvore
+	 *  aleatóriamente. Caso a profundidade seja <0, o construtor não faz nada.
+	 *  Parâmetros:
+	 * 		int deepth, profundidade máxima.
+	 *  Retorno:
+	 * 		---
+	 */	
 	
-	//verifico se já atingi a profundidade máxima da árvore. caso não,
-	//a criação de um novo nó não precisa ser restringida.
+	this->deepth = deepth;
+	
+	//Se ainda não foi atigida a profundidade máxima, não preciso restringir a
+	//criação de um nó. Se for atingida, necessariamente tenho que ter um 
+	//terminal.
 	if (deepth>1) {
 		value = rand_everything();
 
-		//se o nó for unário, precisará de um único valor
-		if (is_func(this->value)==1)
-			dir = new node(deepth-1); 
-	
+		//se o nó for unário, precisará de um único filho, que por padrão fica
+		//à direita.
+		if (aridade(this->value)==1) {
+			dir = new node(deepth-1);
+		}
 		//caso seja binário, precisará de 2.
-		else if (is_func(this->value)==2){
+		else if (aridade(this->value)==2){
 			esq = new node(deepth-1);
 			dir = new node(deepth-1);
 		}
 	}
-	else
+	else if (deepth>0)
 		value = rand_term_set();
 }
 
@@ -175,22 +296,29 @@ node::~node(){
 
 	delete esq;
 	esq = NULL;
-
+	
 	delete dir;
 	dir = NULL;
 }
 
 void node::print_node() {
 
-	//imprime na notação usual a expressão da árvore.
-
+	/** Função que imprime numa notação legível a equação que a árvore binária
+	 *  representa. a impressão é feita de chamada recursiva, tendo como raiz
+	 *  o nó que chamou a função.
+	 *  Parâmetros:
+	 * 		---
+	 *  Retorno:
+	 * 		---
+	 */
+	 
 	if (value=='s') {
 		cout << "sin("; dir->print_node(); cout << ")";	
 	}
 	else if (value=='c') {
 		cout << "cos("; dir->print_node(); cout << ")";	
 	}
-	else if (is_func(value)==2) {
+	else if (aridade(value)==2) {
 			cout << "("; esq->print_node();
 			cout << value;
 			dir->print_node(); cout << ")";	
@@ -200,49 +328,186 @@ void node::print_node() {
 	}
 }
 
-double node::recupera_valor(double x = 1.0, double y = 1.0) {
+double node::recupera_valor(double x = 0.0) {
 	
-	//Função que ao ser chamada retorna o resultado da expressão da arvore que
-	//a chamou.
+	/** Função que retorna o resultado da expressão da árvore que a chamou.
+	 *  Parâmetros:
+	 * 		double 'x', representando o valor que x assumirá, se necessário.
+	 *  Retorno:
+	 * 		(double) Resultado da f(x), onde f é a expressão da árvore e x o 
+	 *      valor passado.
+	 */
 	 
-	if (is_func(value)==0) {
-		return numbera(value, x, y);
+	if (aridade(value)==0) {
+		return numbera(value, x);
 	}
 	else {
-		//a função opera é sobrecarregada para calcular dependendo da aridade
-		if (is_func(value)==1) {
-			return opera(dir->recupera_valor(), value );
+		//verifico a aridade, para utilizar a função 'opera' corretamente.
+		if (aridade(value)==1) {
+			return opera( dir->recupera_valor(x), value );
 		}
-		else if (is_func(value)==2){
-			return (opera( esq->recupera_valor(),
-						   dir->recupera_valor(),
+		else if (aridade(value)==2){
+			return (opera( esq->recupera_valor(x),
+						   dir->recupera_valor(x),
 						   value) );
 		}
 	}
 }
 
+double node::recupera_mse(const double *target_values, const int n){
+	
+	/** Função que recebe um array contendo os valores alvo, e calcula o mse,
+	 *  num intervalo entre 0 e n, sendo n o número de valores alvo.
+	 *  Parâmetros:
+	 * 		double[] target_values, contendo os valores alvo
+	 * 		int n, sendo o tamanho do array target_values;
+	 *  Retorno:
+	 * 		(double) o mse calculado para a árvore.
+	 */	
+	
+	double mse = 0;
+	
+	for (int i=0; i<n; i++)
+		mse += pow( ( recupera_valor(i)-target_values[i] ) ,2 );
+	
+	return sqrt(mse/double(n));
+}
 
+void node::mutation(double mutation_rate){
 
-class population{
+	/** Função que recebe o fator de mutação, e sorteia um número para ver se
+	 *  o nó escolhido será modificado. Após isso, chama recursivamente a
+	 *  mutação para seus filhos. Quando há mutação, ela verifica se a aridade
+	 *  da operação continua a mesma, para evitar a criação de expressões invá-
+	 *  lidas; caso a aridade tenha mudado, a árvore a partir daquele ponto é
+	 *  reconstruída.
+	 *  Parâmetros:
+	 * 		double mutation_rate, variando de 0 a 100
+	 *  Retorno:
+	 * 		---
+	 */
+	
+	int aridade_anterior = aridade(value);
+	
+	if (rand()%100<= mutation_rate) {
+		
+		if (deepth>1) {
+			//eu preciso ter mais profundidade para colocar o terminal
+			value = rand_everything();
+		
+			if ( aridade_anterior != aridade(value) ) {
 
-	public:
-		node **pop;
+				delete esq;
+				esq = NULL;
+
+				delete dir;
+				dir = NULL;
+			
+				if (aridade(value)==1) 
+					dir = new node(deepth-1);
+					
+				if (aridade(value)==2) {
+					dir = new node(deepth-1);
+					esq = new node(deepth-1);
+				}
+			}
+		}
+		else
+			value = rand_term_set();
+	}
+	if (esq)
+		esq->mutation(mutation_rate);
+	if (dir)
+		dir->mutation(mutation_rate);
+}
+
+node *node::recupera_copia() {
+
+	/** Função que retorna um ponteiro que aponta para uma cópia do nó que a
+	 *  chamou. A cópia inclui o valor, profundidade e todos os filhos.
+	 *  Parâmetros:
+	 * 		---
+	 *  Retorno:
+	 * 		---
+	 */
+
+	node *aux;
+	
+		aux = new node(-1);
 		
-		int pop_size;
+		aux->value = this->value;
+		aux->deepth = this->deepth;
 		
-		population(int pop_size, int pop_deepth);
-		~population();
+		if (this->esq)
+			aux->esq = this->esq->recupera_copia();
+		if (this->dir)
+			aux->dir = this->dir->recupera_copia();
+	return aux;
+}
+
+void node::crossover_with(node *pai, double crossover_rate) {
+
+	/** Função que recebe o ponteiro para o outro fornecedor de "DNA" e o fator
+	 *  de troca de material. 
+	 *  Parâmetros:
+	 * 		ponteiro para um nó que trocará material com o nó que chamou 
+	 *  	a função.
+	 *  Retorno:
+	 * 		---
+	 */
+	 
+	node *auxdir;
+	node *auxesq;
+	char auxvalue;
+	
+	if (!pai)
+		return;
 		
-		void print_pop();
-};
+	if (rand()%100<crossover_rate) {
+		auxvalue = this->value;
+		auxdir = this->dir;
+		auxesq = this->esq;
+		
+		this->value = pai->value;
+		this->esq = pai->esq;
+		this->dir = pai->dir;
+		
+		pai->value = auxvalue;
+		pai->esq = auxesq;
+		pai->dir = auxdir;
+	}
+	else {
+		if (this->esq)
+			this->esq->crossover_with(pai->esq, crossover_rate);
+		if (this->dir)
+			this->dir->crossover_with(pai->dir, crossover_rate);
+	}
+}
+
+//---------------------------------------------------------------------------//
+//----------------------FUNÇÕES DA CLASSE POPULATION-------------------------//
+//---------------------------------------------------------------------------//
 
 population::population(int pop_size, int pop_deepth){
 
-	//o construtor cria a população com o tamanho de individuos e a profundi-
-	//dade máxima passada.
+	/** Função construtora, que inicializa o array pop de acordo com o tamanho
+	 *  passado, e cria n árvores aleatórias, todas com profundidade máxima
+	 *  igual a pop_deepth.
+	 * 	A função também já prepara o array pop_backup para ser utilizado caso
+	 *  necessário.
+	 *  Parâmetros:
+	 * 		int pop_size, o tamanho da população;
+	 * 		int pop_deepth, a profundidade máxima das árvores, passada para o
+	 *						construtor dos nós.
+	 *  Retorno:
+	 * 		---
+	 */
 
-	pop_size = pop_size;	 
+	this->pop_size = pop_size;	
+	this->pop_deepth = pop_deepth;
+	 
 	pop = new node*[pop_size];
+	pop_backup = new node *[pop_size];
 	
 	for (int i=0; i<pop_size; i++)
 		pop[i] = new node(pop_deepth);
@@ -252,15 +517,90 @@ population::~population(){
 
 	for (int i=0; i<pop_size; i++)
 		delete pop[i];
-	delete[] pop;
+	delete pop;
 }
 
 void population::print_pop() {
 
-	//imprime, em cada linha, a equação de cada um dos individuos.
+	/** Função chama para cada árvore binária a função print_node(), no array
+	 *  pop.
+	 *  Parâmetros:
+	 *  	---
+	 *  Retorno:
+	 * 		---
+	 */
+	 
 	for (int i=0; i<pop_size; i++) {
 		cout << "individuo " << i << ": ";
 		pop[i]->print_node();
+		cout << endl;
+	}
+}
+
+node population::fitness(const double *target_values, const int n){
+	
+	/** Função percorre a população, chamando para todas as árvores a função
+	 *  recupera_mse; sempre armazenando a árvore que apresentou o menor mse.
+	 *  Parâmetros:
+	 *  	double[] target_values;
+	 * 		int n, tamanho do target_values;
+	 *  Retorno:
+	 * 		(node) árvore com melhor mse.
+	 */	
+	
+	int index_melhor = 0;
+	
+	for (int i=1; i<pop_size; i++) {
+		if (pop[i]->recupera_mse(target_values, n) <
+			pop[index_melhor]->recupera_mse(target_values, n) ){
+			index_melhor = i;
+		}
+	}
+	
+	return *pop[index_melhor];
+}
+
+void population::mutation(double mutation_rate) {
+
+	/** Função chama para cada árvore binária a função mutation().
+	 *  Parâmetros:
+	 *  	double mutation_rate, passado para a função mutation();
+	 *  Retorno:
+	 * 		---
+	 */
+
+	for (int i=0; i<pop_size; i++) {
+		pop[i]->mutation(mutation_rate);
+	}
+}
+
+void population::set_backup() {
+
+	/** Função cria cópia de todo o array pop no array pop_backup.
+	 *  Parâmetros:
+	 *  	---
+	 *  Retorno:
+	 * 		---
+	 */
+
+	for (int i=0; i<pop_size; i++) {
+		delete pop_backup[i];
+		pop_backup[i] = pop[i]->recupera_copia();	
+	}
+}
+
+void population::print_backup() {
+
+	/** Função chama para cada árvore binária a função print_node(), porém no
+	 *  array pop_backup.
+	 *  Parâmetros:
+	 *  	---
+	 *  Retorno:
+	 * 		---
+	 */
+	for (int i=0; i<pop_size; i++) {
+		cout << "individuo " << i << ": ";
+		pop_backup[i]->print_node();
 		cout << endl;
 	}
 }
