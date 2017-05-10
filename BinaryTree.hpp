@@ -227,6 +227,8 @@ class population{
 	 * 					   que obteve o menor valor do mse;
 	 * 		mutation     : chama o método mutation em cada uma das árvores;
 	 *		set_backup   : copia o array pop no array pop_backup;
+	 *		get_backup	 : copia o array backup no array pop;
+	 *		next_gen	 : cria a próxima geração.
 	 */
 	
 	private: 
@@ -242,9 +244,13 @@ class population{
 		
 		void print_pop();
 		void print_backup();
-		node fitness(const double *target_values, const int n);
+		node *fitness(const double *target_values, const int n);
+		node *melhor_mse(double *target_values, int n);
 		void mutation(double mutation_rate);
 		void set_backup();
+		void get_backup();
+		void next_gen(double mutation_rate, double *target_values,
+									int n, double crossover_rate);
 };
 
 
@@ -506,18 +512,23 @@ population::population(int pop_size, int pop_deepth){
 	this->pop_size = pop_size;	
 	this->pop_deepth = pop_deepth;
 	 
-	pop = new node*[pop_size];
+	pop = new node *[pop_size];
 	pop_backup = new node *[pop_size];
 	
-	for (int i=0; i<pop_size; i++)
+	for (int i=0; i<pop_size; i++) {
 		pop[i] = new node(pop_deepth);
+		pop_backup[i] = new node (-1);
+	}
 }
 
 population::~population(){
 
-	for (int i=0; i<pop_size; i++)
+	for (int i=0; i<pop_size; i++) {
 		delete pop[i];
+		delete pop_backup[i];
+	}
 	delete pop;
+	delete pop_backup;
 }
 
 void population::print_pop() {
@@ -537,7 +548,7 @@ void population::print_pop() {
 	}
 }
 
-node population::fitness(const double *target_values, const int n){
+node *population::fitness(const double *target_values, const int n){
 	
 	/** Função percorre a população, chamando para todas as árvores a função
 	 *  recupera_mse; sempre armazenando a árvore que apresentou o menor mse.
@@ -547,18 +558,37 @@ node population::fitness(const double *target_values, const int n){
 	 *  Retorno:
 	 * 		(node) árvore com melhor mse.
 	 */	
-	
-	int index_melhor = 0;
-	
-	for (int i=1; i<pop_size; i++) {
-		if (pop[i]->recupera_mse(target_values, n) <
-			pop[index_melhor]->recupera_mse(target_values, n) ){
-			index_melhor = i;
+
+	double maior_mse = 0;
+
+	for (int i=0; i<pop_size; i++) {
+		if (pop[i]->recupera_mse(target_values, n) > maior_mse){
+			maior_mse = pop[i]->recupera_mse(target_values, n);
 		}
 	}
-	
-	return *pop[index_melhor];
+
+	for (int i=0; i<pop_size; i++) {
+		if (rand() % int(maior_mse)+1 > pop[i]->recupera_mse(target_values, n)){
+			return pop[i];
+		}
+	}
+	return pop[0];
 }
+
+node *population::melhor_mse(double *target_values, int n){
+
+	int index = 0;
+	double melhor = pop[index]->recupera_mse(target_values, n);
+
+	for (int i=1; i<pop_size; i++){
+		if (pop[i]->recupera_mse(target_values, n) < melhor){
+			index = i;
+			melhor = pop[index]->recupera_mse(target_values, n);
+		}
+	}
+	return pop[index];
+}
+
 
 void population::mutation(double mutation_rate) {
 
@@ -589,6 +619,22 @@ void population::set_backup() {
 	}
 }
 
+void population::get_backup() {
+
+	/** Função cria cópia de todo o array pop_backup no array pop.
+	 *  Parâmetros:
+	 *  	---
+	 *  Retorno:
+	 * 		---
+	 */
+
+	for (int i=0; i<pop_size; i++) {
+		delete pop[i];
+		pop[i] = pop_backup[i]->recupera_copia();	
+	}
+
+}
+
 void population::print_backup() {
 
 	/** Função chama para cada árvore binária a função print_node(), porém no
@@ -603,4 +649,31 @@ void population::print_backup() {
 		pop_backup[i]->print_node();
 		cout << endl;
 	}
+}
+
+void population::next_gen(double mutation_rate, double *target_values, int n, double crossover_rate){
+	
+	/** A função recebe vários parâmetros, e faz: seleção, crossover, mutação e
+	 *  a criação da nova população.
+	 *
+	 */
+
+	node *aux1;
+	node *aux2;
+
+	set_backup();
+	
+	for (int i=0; i<=pop_size/2 ;i=i+2){
+		aux1 = fitness(target_values, n)->recupera_copia();
+		aux2 = fitness(target_values, n)->recupera_copia();
+
+		aux1->crossover_with(aux2, crossover_rate);
+
+		pop_backup[i] = aux1;
+		pop_backup[i+1] = aux2;
+	}
+
+	get_backup();
+
+	mutation(mutation_rate);
 }
