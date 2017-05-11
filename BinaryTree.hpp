@@ -274,7 +274,7 @@ node::node(int deepth){
 	 *  Retorno:
 	 * 		---
 	 */	
-	
+	 
 	this->deepth = deepth;
 	
 	//Se ainda não foi atigida a profundidade máxima, não preciso restringir a
