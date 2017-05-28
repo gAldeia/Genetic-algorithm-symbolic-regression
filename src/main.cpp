@@ -1,7 +1,3 @@
-#include <iomanip>
-#include <iostream>
-#include <cstdio>
-
 #include "BinaryTree.hpp"
 
 using namespace std;
@@ -14,8 +10,8 @@ const int pop_depth = 10;
 double mutation_rate = 10;
 double crossover_rate = 40;
 
-double target_values[] = {1.0, 2.0, 4.0, 8.0, 16.0};
-int target_values_size = 5;
+double target_values[] = {1, 1, 2, 3, 5, 8, 13, 21, 34};
+int target_values_size = 9;
 
 
 
