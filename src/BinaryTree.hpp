@@ -590,6 +590,7 @@ node *population::apply_fitness(const double *target_values, const int n){
 	 */	
 
 	double highest_mse = 0;
+	int index;
 
 	for (int i=0; i<pop_size; i++) {
 		if (pop[i]->get_mse(target_values, n) > highest_mse){
@@ -597,12 +598,13 @@ node *population::apply_fitness(const double *target_values, const int n){
 		}
 	}
 
-	for (int i=0; i<pop_size; i++) {
-		if (rand() % (int(highest_mse) + 1) > pop[i]->get_mse(target_values, n)){
-			return pop[i];
+	while(true){
+		index = rand() %pop_size;
+
+		if (rand() % int(highest_mse)+1 > pop[index]->get_mse(target_values, n)){
+			return pop[index];
 		}
 	}
-	return pop[rand() % pop_size];
 }
 
 node *population::get_best_mse(double *target_values, int n){
@@ -625,7 +627,7 @@ void population::apply_fitness_pop(double *target_values, int n){
 		delete pop_backup[i];
 		pop_backup[i]= apply_fitness(target_values, n)->get_copy();
 	}
-
+	get_backup();
 }
 
 void population::apply_crossover_pop(double crossover_rate){
@@ -634,10 +636,13 @@ void population::apply_crossover_pop(double crossover_rate){
 	node *aux2;
 
 	for (int i=0; i<pop_size -1 ;i=i+2){
-		aux1 = pop[i]->get_copy();
-		aux2 = pop[i+1]->get_copy();
+		aux1 = pop[rand() % pop_size]->get_copy();
+		aux2 = pop[rand() % pop_size]->get_copy();
 
 		aux1->apply_crossover(aux2, crossover_rate);
+
+		delete pop_backup[i];
+		delete pop_backup[i+1];
 
 		pop_backup[i] = aux1;
 		pop_backup[i+1] = aux2;
