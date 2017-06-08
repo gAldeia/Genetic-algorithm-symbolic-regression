@@ -17,6 +17,8 @@ int target_values_size = 9;
 
 int main() {
 
+	srand(time(NULL));
+	
 	population *pop = new population(pop_size, pop_depth);
 	node *aux;
 	double melhor;
