@@ -1,4 +1,3 @@
-#include <random>
 #include <cstdlib>
 #include <math.h>
 
@@ -439,9 +438,9 @@ void node::apply_mutation(double mutation_rate){
 					delete dir;
 					dir = NULL;
 				}
-				if (arity(value)==1) 
+				if (arity(value)==1) {
 					dir = new node(depth-1);
-					
+				}
 				if (arity(value)==2) {
 					dir = new node(depth-1);
 					esq = new node(depth-1);
@@ -592,6 +591,7 @@ node *population::apply_fitness(const double *target_values, const int n){
 	double highest_mse = 0;
 	int index;
 
+	//procuro o maior mse da população
 	for (int i=0; i<pop_size; i++) {
 		if (pop[i]->get_mse(target_values, n) > highest_mse){
 			highest_mse = pop[i]->get_mse(target_values, n);
@@ -599,7 +599,7 @@ node *population::apply_fitness(const double *target_values, const int n){
 	}
 
 	while(true){
-		index = rand() %pop_size;
+		index = rand() % pop_size;
 
 		if (rand() % int(highest_mse)+1 > pop[index]->get_mse(target_values, n)){
 			return pop[index];
@@ -635,9 +635,11 @@ void population::apply_crossover_pop(double crossover_rate){
 	node *aux1;
 	node *aux2;
 
-	for (int i=0; i<pop_size -1 ;i=i+2){
-		aux1 = pop[rand() % pop_size]->get_copy();
-		aux2 = pop[rand() % pop_size]->get_copy();
+	for (int i=0; i<(pop_size/2); i++){
+		//pego aleatóriamente um individuo da primeira metade da população
+		//e aleatóriamente um individuo da segunda metade
+		aux1 = pop[rand() % pop_size/2]->get_copy();
+		aux2 = pop[(rand() % (pop_size/2) ) + (pop_size/2)]->get_copy();
 
 		aux1->apply_crossover(aux2, crossover_rate);
 
