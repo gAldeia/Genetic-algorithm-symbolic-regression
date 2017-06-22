@@ -85,6 +85,7 @@ typedef struct node {
 
     //OBS 2: (me disseram que) é uma boa prática, sempre que criar ponteiros,
     //inicializá-los com "NULL".
+    
     node *leftChild = NULL;
     node *rightChild = NULL;
 
@@ -105,17 +106,18 @@ void print_node_d(node *root){
     //OBS: uma passagem de parâmetros por referencia em C/C++ é feita passando
     //o ponteiro que aponta para a região de memória da variável. Então, neste
     //caso, está sendo passado o endereço da raiz da árvore.
-
-    cout << "(";
-    if (root->leftChild)
+    
+    if (root->leftChild){
+        cout << "(";
         print_node_d(root->leftChild);
+    }
     
     cout << root->value;
 
-    if (root->rightChild)
+    if (root->rightChild){
         print_node_d(root->rightChild);
-    
-    cout << ")";
+        cout << ")";
+    }
 }
 
 
