@@ -8,7 +8,7 @@
 //contato com herança de classes, construtores, encapsulamento, etc.
 //----------------------------------------------------------------------------//
 
-#include "quadratic-equation-solver-header.hpp"
+#include "quadratic-solver-reference-header.hpp"
 
 
 using namespace std;
