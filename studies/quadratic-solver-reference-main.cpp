@@ -8,6 +8,7 @@
 //contato com herança de classes, construtores, encapsulamento, etc.
 //----------------------------------------------------------------------------//
 
+
 #include "quadratic-solver-reference-header.hpp"
 
 
@@ -33,14 +34,14 @@ int main(){
     //evolução da população
     while (true){
 
+        //imprimo informações da geração na tela
+        cout << "\nGeração " << ++gen << endl;
+        population->print_pop_d();
+
         //verifico se o indivíduo perfeito já foi encontrado, caso sim,
         //paro o laço e imprimo seu fenótipo.
         if (population->check_and_print())
             break;
-
-        //imprimo informações da geração na tela
-        cout << "\nGeração " << ++gen << endl;
-        population->print_pop_d();
 
         //evoluo a população para a próxima geração
         population->tournament_selection();
