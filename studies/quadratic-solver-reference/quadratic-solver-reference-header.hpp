@@ -8,6 +8,7 @@
 //contato com herança de classes, construtores, encapsulamento, etc.
 //----------------------------------------------------------------------------//
 
+#include <ctime>
 #include <cstdlib>
 #include <cmath>
 #include <string>
