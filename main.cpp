@@ -1,4 +1,87 @@
 //----------------------------------------------------------------------------//
+#include <iostream>
+#include <cstdlib>
+#include <vector>
+#include <string>
+
+
+using namespace std;
+
+
+//GUARDAR FUNÇÕES ÚTEIS IMPLEMENTADAS POR NÓS (NÓS != NODES)------------------//
+class Useful{
+
+    //se não me engano, static são métodos que podem ser utiliados sem
+    //instanciar uma classe.
+
+    public:
+        static double func1_solver(int function, double A, double B);
+        static double func2_solver(int function, double A, double B);
+
+        static double div(double A, double B);
+        static double sum(double A, double B);
+
+        //e assim vai...
+};
+
+
+//CLASSE NODE: CONTÉM SÓ A "INFORMAÇÃO GENÉTICA"------------------------------//
+class Node{
+
+    private:
+        enum {
+            var = 0,
+            cte = 1,
+            fun1 = 2,
+            fun2 = 3
+        } Definitions;
+
+        union {
+            int idX;        //var
+            double value;   //const
+            int function;   //func1 ou func2
+        } Value;
+        
+        Node *left;
+        Node *right;
+
+    public:
+        Node();
+        ~Node();
+
+        double eval(vector<double> x);
+        void print_node_d();
+        Node *get_copy();
+};
+
+
+//CLASSE SPECIMEN: CONTÉM AS OPERAÇÕES SOBRE O "MATERIAL GENÉTICO"------------//
+class Specimen : public Node{
+    
+    //herda NODE
+
+    private:
+
+    public:
+        Specimen();
+        ~Specimen();
+
+        // crossover();
+        // mutation();
+        // fitness();
+        // etc...
+};
+
+
+//----------------------------------------------------------------------------//
+int main(){
+
+    return 0;
+}
+
+/*
+
+//----------------------------------------------------------------------------//
 // Ideias para melhorar a implementação do código principal.
 //----------------------------------------------------------------------------//
 #include <iostream>
@@ -129,3 +212,5 @@ int main(){
 
     return 0;
 }
+
+*/
