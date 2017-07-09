@@ -57,7 +57,7 @@ double Node::eval(std::vector<double> x) {
     switch (tipo) {
         case VAR:
             C.idX = x[0];
-            return C.idx;
+            return C.idX;
         case CTE:
             return C.value;
         case FUN1:  //Função com um parâmetro
