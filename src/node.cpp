@@ -4,6 +4,7 @@
 #include <random>
 #include <cstdlib>
 #include <iostream>
+//#include <vector>
 
 using namespace utils;
 
@@ -15,7 +16,7 @@ Node::Node(){
         //atribui um valor de 0 a 9 para a variável
         C.value = random()%10;
 
-        //se aqui é variável, é folha, então não terá filhos.
+        //se aqui é constante, é folha, então não terá filhos.
         left = NULL;
         right = NULL;
     }
@@ -35,6 +36,7 @@ Node::Node(){
         //usar só na direita é que facilita a impressão pois não precisamos
         //tratar unário/binário diferentemente.
         right = new Node();
+        left = NULL;
     }
     else if (tipo==FUN2){
 
@@ -49,6 +51,24 @@ Node::Node(){
 
 Node::~Node(){
 
+}
+
+double Node::eval(std::vector<double> x){
+    if (tipo==VAR){
+        C.idX = x[0];
+        return C.idX;
+    }
+    else if (tipo==CTE){
+        return C.value;
+    }
+    else if (tipo==FUN1){ //se for função de um parâmetro
+        return func1_solver(C.function, right->eval(x));
+    }
+    else if (tipo==FUN2){ //ultimo caso: função de dois parametros
+        return func2_solver(C.function, left->eval(x), right->eval(x));
+    }
+    else
+        std::cout << "ERRO EVAL" << std::endl;
 }
 
 void Node::print_node_d(){
