@@ -54,21 +54,23 @@ Node::~Node(){
 }
 
 double Node::eval(std::vector<double> x){
-    if (tipo==VAR){
-        C.idX = x[0];
-        return C.idX;
-    }
-    else if (tipo==CTE){
-        return C.value;
-    }
-    else if (tipo==FUN1){ //se for função de um parâmetro
-        return func1_solver(C.function, right->eval(x));
-    }
-    else if (tipo==FUN2){ //ultimo caso: função de dois parametros
-        return func2_solver(C.function, left->eval(x), right->eval(x));
-    }
-    else
-        std::cout << "ERRO EVAL" << std::endl;
+    switch (tipo) {
+        case VAR:
+            C.idX = x[0];
+            return C.idx;
+        case CTE:
+            return C.value;
+        case FUN1:  //Função com um parâmetro
+            if (left != NULL) {
+                return func1_solver(C.function, left->eval(x));
+            }
+            else {
+                return func1_solver(C.function, right->eval(x));
+            }
+        case FUN2:  //Função com dois parâmetros
+            return func2_solver(C.function, left->eval(x), right->eval(x));
+        default:
+            std::cout << "ERRO EVAL" << std::endl;
 }
 
 void Node::print_node_d(){
