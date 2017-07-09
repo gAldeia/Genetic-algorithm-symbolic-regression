@@ -36,19 +36,19 @@ namespace utils {
     double rad_to_degrees(double v);
 
     //funções de 2 parâmetros
-    double  div(double v1, double v2);
-    double  add(double, double);
-    double  sub(double v1, double v2);
-    double mult(double v1, double v2);
-    double  pow(double v1, double v2);
+    double  uDiv(double v1, double v2);
+    double  uAdd(double, double);
+    double  uSub(double v1, double v2);
+    double uMult(double v1, double v2);
+    double  uPow(double v1, double v2);
 
     //funções de 1 parâmetro
-    double   sin(double v);
-    double   cos(double v);
-    double   tan(double v);
-    double    ln(double v);
-    double   exp(double v);
-    double  sqrt(double v);
+    double   uSin(double v);
+    double   uCos(double v);
+    double   uTan(double v);
+    double    uLn(double v);
+    double   uExp(double v);
+    double  uSqrt(double v);
 
 }
 #endif
