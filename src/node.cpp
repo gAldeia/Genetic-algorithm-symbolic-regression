@@ -53,7 +53,7 @@ Node::~Node(){
 
 }
 
-double Node::eval(std::vector<double> x){
+double Node::eval(std::vector<double> x) {
     switch (tipo) {
         case VAR:
             C.idX = x[0];
