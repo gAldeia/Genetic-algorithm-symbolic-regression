@@ -71,6 +71,7 @@ double Node::eval(std::vector<double> x){
             return func2_solver(C.function, left->eval(x), right->eval(x));
         default:
             std::cout << "ERRO EVAL" << std::endl;
+    }
 }
 
 void Node::print_node_d(){
