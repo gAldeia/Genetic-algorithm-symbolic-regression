@@ -1,31 +1,33 @@
 #include "utils.hpp"
+
 #include <cmath>
+#include <iostream>
 
 namespace utils{
 
     // Função Soma
-    double add(double v1, double v2) {
+    double uAdd(double v1, double v2) {
 
         return (v1 + v2);
     }
 
 
     // Função Subtração
-    double sub(double v1, double v2) {
+    double uSub(double v1, double v2) {
 
         return (v1 - v2);
     }
 
 
     // Função Multiplicação
-    double mult(double v1, double v2) {
+    double uMult(double v1, double v2) {
 
         return (v1 * v2);
     }
 
 
     // Função Divisão
-    double div(double v1, double v2) {
+    double uDiv(double v1, double v2) {
 
         if (v2 == 0) {
             return 0;   //Padrão
@@ -36,7 +38,7 @@ namespace utils{
     }
 
     // Função Potência
-    double pow(double v1, double v2) {
+    double uPow(double v1, double v2) {
 
         if ((v1 == 0)&&(v2 == 0)) {
             return 0;   //Padrão - Equivalente matemático a 0/0
@@ -47,13 +49,13 @@ namespace utils{
     }
 
     // Função Exponencial (e^v)
-    double exp(double v) {
+    double uExp(double v) {
 
         return (exp(v));
     }
 
     // Função Raiz Quadrada
-    double sqrt(double v) {
+    double uSqrt(double v) {
 
         if (v < 0) {
             return 0;
@@ -64,7 +66,7 @@ namespace utils{
     }
 
     // Função Logaritmo Neperiano
-    double ln(double v) {
+    double uLn(double v) {
 
         if (v > 0) {
             return (log(v));
@@ -85,21 +87,21 @@ namespace utils{
     }
 
     // Função Seno
-    double sin(double v) {
+    double uSin(double v) {
 
         return (sin(rad_to_degrees(v)));
     }
 
 
     // Função Cosseno
-    double cos(double v) {
+    double uCos(double v) {
 
         return (cos(rad_to_degrees(v)));
     }
 
 
     // Função Tangente
-    double tan(double v) {
+    double uTan(double v) {
 
         double V = rad_to_degrees(v);
         if ((V == 90)||(V == 270)) {
@@ -114,17 +116,25 @@ namespace utils{
         
         switch (F_id) {
             case LN:
-                return ln(v);
+                return uLn(v);
+                break;
             case EXP:
-                return exp(v);
+                return uExp(v);
+                break;
             case SQRT:
-                return sqrt(v);
+                return uSqrt(v);
+                break;
             case SIN:
-                return sin(v);
+                return uSin(v);
+                break;
             case COS:
-                return cos(v);
+                return uCos(v);
+                break;
             case TAN:
                 return tan(v);
+                break;
+            default:
+                std::cout << "ERRO FUNC1 SOLVER" << std::endl;
         }
     }
 
@@ -132,15 +142,22 @@ namespace utils{
         
         switch (F_id) {
             case ADD:
-                return add(v1, v2);
+                return uAdd(v1, v2);
+                break;
             case SUB:
-                return sub(v1, v2);
+                return uSub(v1, v2);
+                break;
             case MULT:
-                return mult(v1, v2);
+                return uMult(v1, v2);
+                break;
             case DIV:
-                return div(v1, v2);
+                return uDiv(v1, v2);
+                break;
             case POW:
-                return pow(v1, v2);
+                return uPow(v1, v2);
+                break;
+            default:
+                std::cout << "ERRO FUNC2 SOLVER" << std::endl;
         }
     }
 }
