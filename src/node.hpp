@@ -1,6 +1,7 @@
 #ifndef _NODE_H
 #define _NODE_H
 
+#include <vector>
 
 class Node{
 
@@ -17,7 +18,7 @@ class Node{
         //função acessar estas informação, mas pode ser que eu esteja enganado.
 
         Content C;
-        int tipo;
+        int tipo; //recebe o índice do content
 
         Node *left;
         Node *right;
@@ -26,7 +27,7 @@ class Node{
         Node();
         ~Node();
 
-        //double eval(vector<double> input);
+        double eval(std::vector<double> x);
         void print_node_d();
         Node *get_copy();
 };
