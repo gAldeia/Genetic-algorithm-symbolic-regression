@@ -9,50 +9,65 @@
 using namespace utils;
 
 //IMPLEMENTAÇÃO DE NODE-------------------------------------------------------//
-Node::Node(){
-    tipo = random() % SIZETYPE;
+Node::Node(bool copy){
+    if (!copy){ //verifica se o nó está sendo chamado no modo cópia.
+                //o construtor toma como padrão que o nó criado é sempre um novo
+                //nó, sendo então necessário especificar no construtor "true"
+                //para que seja criado uma cópia da árvore.
 
-    if (tipo==CTE){
-        //atribui um valor de 0 a 9 para a variável
-        C.value = random()%10;
+        tipo = random() % SIZETYPE;
 
-        //se aqui é constante, é folha, então não terá filhos.
-        left = NULL;
+        if (tipo==CTE){
+            //atribui um valor de 0 a 9 para a variável
+            C.value = random()%10;
+
+            //se aqui é constante, é folha, então não terá filhos.
+            left = NULL;
+            right = NULL;
+        }
+        else if (tipo==VAR){
+            
+            C.idX = 0.0;
+
+            //var tbm é folha
+            left = NULL;
+            right = NULL;
+        }
+        else if (tipo==FUN1){
+
+            C.function = random() % SIZEFUNC1;
+
+            //por padrão, funções unárias terão filho só na direita. a vantagem de
+            //usar só na direita é que facilita a impressão pois não precisamos
+            //tratar unário/binário diferentemente.
+            right = new Node();
+            left = NULL;
+        }
+        else if (tipo==FUN2){
+
+            C.function = random() % SIZEFUNC2;
+
+            right = new Node();
+            left = new Node();
+        }
+        else
+            std::cout << "ERRO CONSTRUTOR NODE" << std::endl;
+    }
+    else {
+        //aqui deve fazer operações para que o nó não exploda 
+        //o programa
+
         right = NULL;
-    }
-    else if (tipo==VAR){
-        
-        C.idX = 0.0;
-
-        //var tbm é folha
-        left = NULL;
-        right = NULL;
-    }
-    else if (tipo==FUN1){
-
-        C.function = random() % SIZEFUNC1;
-
-        //por padrão, funções unárias terão filho só na direita. a vantagem de
-        //usar só na direita é que facilita a impressão pois não precisamos
-        //tratar unário/binário diferentemente.
-        right = new Node();
         left = NULL;
     }
-    else if (tipo==FUN2){
-
-        C.function = random() % SIZEFUNC2;
-
-        right = new Node();
-        left = new Node();
-    }
-    else
-        std::cout << "ERRO CONSTRUTOR NODE" << std::endl;
 }
 
 Node::~Node(){
-
+    if (left)
+        delete left;
+    if (right)
+        delete right;
 }
-
 double Node::eval(std::vector<double> x) {
     switch (tipo) {
         case VAR:
@@ -135,4 +150,30 @@ void Node::print_node_d(){
         right->print_node_d();
         std::cout << ")";
     }
+}
+
+Node *Node::get_copy(){
+    Node *aux = new Node(true); //os ponteiros para os filhos dele
+                                //já estarão com valor NULL
+    aux->tipo = this->tipo;
+
+    if (this->tipo==VAR){
+        aux->C.idX = this->C.idX;
+    }
+    else if (this->tipo==CTE){
+        aux->C.value = this->C.value;
+    }
+    else if (this->tipo==FUN1){ //se for função de um parâmetro
+        aux->C.function = this->C.function;
+        aux->right = this->right->get_copy();
+    }
+    else if (this->tipo==FUN2){ //se for função de um parâmetro
+        aux->C.function = this->C.function;
+        aux->left = this->left->get_copy();
+        aux->right = this->right->get_copy();
+    }
+    else{
+        std::cout << "ERRO GET COPY" << std::endl;
+    }
+    return aux;
 }
