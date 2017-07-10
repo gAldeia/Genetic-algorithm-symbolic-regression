@@ -24,7 +24,7 @@ class Node{
         Node *right;
 
     public:
-        bool copy = false
+        Node(bool copy = false);
         ~Node();
 
         double eval(std::vector<double> x);
