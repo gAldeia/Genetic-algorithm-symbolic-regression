@@ -24,7 +24,7 @@ class Node{
         Node *right;
 
     public:
-        Node();
+        Node(bool);
         ~Node();
 
         double eval(std::vector<double> x);
