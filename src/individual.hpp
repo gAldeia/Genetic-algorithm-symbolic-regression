@@ -4,7 +4,7 @@
 //#include "individual.cpp"
 #include <vector>
 
-class Specimen{
+class Individual{
     
     private:
         Node *root; //deve ser criado no construtor 
@@ -15,12 +15,12 @@ class Specimen{
                     //utilizado)
 
     public:
-        Specimen();
-        ~Specimen();
+        Individual();
+        ~Individual();
 
-        crossover(double crossover_rate);
-        mutation(double mutation_rate);
-        fitness(vector<double> x); //mse
+        Node *crossover(double crossover_rate, Individual parent);
+        void mutation(double mutation_rate);
+        double fitness(vector<double> x); //mse
 };
 
 #endif
