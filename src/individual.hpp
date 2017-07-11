@@ -7,7 +7,7 @@
 class Individual{
     
     private:
-        Node *root; //deve ser criado no construtor 
+        Node *expression; //deve ser criado no construtor 
                     //(deve herdar node ou ter um
                     //ponteiro? não sei. acho que a 
                     //vantagem do ponteiro é que o 
