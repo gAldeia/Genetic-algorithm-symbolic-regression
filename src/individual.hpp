@@ -1,18 +1,20 @@
+//individual.hpp
 #ifndef _INDIVIDUAL_H
 #define _INDIVIDUAL_H
 
-//#include "individual.cpp"
 #include <vector>
+
+#include "node.hpp"
+
+
+using namespace std;
+
 
 class Individual{
     
     private:
-        Node *expression; //deve ser criado no construtor 
-                    //(deve herdar node ou ter um
-                    //ponteiro? não sei. acho que a 
-                    //vantagem do ponteiro é que o 
-                    //get_copy fica mais fácil de ser
-                    //utilizado)
+        Node *expression;
+        double mse_value;
 
     public:
         Individual();
@@ -20,7 +22,8 @@ class Individual{
 
         Node *crossover(double crossover_rate, Individual parent);
         void mutation(double mutation_rate);
-        double fitness(vector<double> x); //mse
+        double fitness(vector< vector<double> > points);
+        void print_expression_d();
 };
 
 #endif
