@@ -1,15 +1,17 @@
-#include "node.hpp"
-#include "utils.hpp"
-
+//node.cpp
 #include <random>
 #include <cstdlib>
 #include <iostream>
-//#include <vector>
+
+#include "node.hpp"
+#include "utils.hpp"
+
 
 using namespace utils;
 
-//IMPLEMENTAÇÃO DE NODE-------------------------------------------------------//
+
 Node::Node(bool copy){
+    
     if (!copy){ //verifica se o nó está sendo chamado no modo cópia.
                 //o construtor toma como padrão que o nó criado é sempre um novo
                 //nó, sendo então necessário especificar no construtor "true"
@@ -37,9 +39,9 @@ Node::Node(bool copy){
 
             C.function = random() % SIZEFUNC1;
 
-            //por padrão, funções unárias terão filho só na direita. a vantagem de
-            //usar só na direita é que facilita a impressão pois não precisamos
-            //tratar unário/binário diferentemente.
+            //por padrão, funções unárias terão filho só na direita. a vantagem
+            //de usar só na direita é que facilita a impressão pois não 
+            //precisamos tratar unário/binário diferentemente.
             right = new Node();
             left = NULL;
         }
@@ -54,8 +56,7 @@ Node::Node(bool copy){
             std::cout << "ERRO CONSTRUTOR NODE" << std::endl;
     }
     else {
-        //aqui deve fazer operações para que o nó não exploda 
-        //o programa
+        //aqui deve fazer operações para que o nó não exploda o programa
 
         right = NULL;
         left = NULL;
@@ -63,25 +64,26 @@ Node::Node(bool copy){
 }
 
 Node::~Node(){
+    
     if (left)
         delete left;
     if (right)
         delete right;
 }
-double Node::eval(std::vector<double> x) {
+
+double Node::eval(double x) {
+    
     switch (tipo) {
         case VAR:
-            C.idX = x[0];
+            C.idX = x;
             return C.idX;
         case CTE:
             return C.value;
         case FUN1:  //Função com um parâmetro
-            if (left != NULL) {
+            if (left != NULL)
                 return func1_solver(C.function, left->eval(x));
-            }
-            else {
+            else
                 return func1_solver(C.function, right->eval(x));
-            }
         case FUN2:  //Função com dois parâmetros
             return func2_solver(C.function, left->eval(x), right->eval(x));
         default:
@@ -90,10 +92,8 @@ double Node::eval(std::vector<double> x) {
 }
 
 void Node::print_node_d(){
+    
     if (tipo==FUN2){
-
-        //se o nó é func2, sabemos que o nó direito não é nulo (pelo menos não
-        //deveria ser)
         std::cout << "(";
         left->print_node_d();
 
@@ -115,6 +115,7 @@ void Node::print_node_d(){
                     break;
                 default:
                     std::cout << "ERRO PRINT NODE D FUN2";
+                    break;
             }
         right->print_node_d();
         std::cout << ")";
@@ -145,14 +146,15 @@ void Node::print_node_d(){
                 break;
             default:
                 std::cout << "ERRO PRINT NODE D FUN1";
+                break;
         }
-
         right->print_node_d();
         std::cout << ")";
     }
 }
 
 Node *Node::get_copy(){
+    
     Node *aux = new Node(true); //os ponteiros para os filhos dele
                                 //já estarão com valor NULL
     aux->tipo = this->tipo;
@@ -176,4 +178,9 @@ Node *Node::get_copy(){
         std::cout << "ERRO GET COPY" << std::endl;
     }
     return aux;
+}
+
+int Node::get_type(){
+
+    return this->tipo;
 }
