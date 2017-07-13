@@ -1,8 +1,11 @@
-#include "utils.hpp"
-#include "node.hpp"
-
+//main.cpp
 #include <iostream>
 #include <cstdlib>
+#include <vector>
+
+#include "utils.hpp"
+#include "individual.hpp"
+
 
 using namespace std;
 
@@ -11,25 +14,27 @@ int main(){
 
     srand(time(NULL));
 
-    Node *root;
+    vector< vector<double> > points;
+    vector<double> x;
+    vector<double> y;
+    
+    double temp;
+    Individual *sujeito1 = new Individual();
 
-    for(int i=0; i<10; i++){
-        root = new Node();
 
-        cout << "A eq. gerada do node é (torça para ser pequena): ";
-        root->print_node_d();
-        cout << endl;
-
-        vector<double> x = {double (random()%10) };
-
-        cout << "Para x = " << x[0] << ", O valor da eq. do node é: " << root->eval(x) << endl << endl;
+    for (int i=0; i<2; i++){
+        cin >> temp;
+        x.push_back(temp);
+        cin >> temp;
+        y.push_back(temp);
     }
-
-    Node *copy = root->get_copy();
-
-    cout << "cópia do ultimo:";
-    copy->print_node_d();
+    
+    points.push_back(x);
+    points.push_back(y);
+    
+    cout << sujeito1->fitness(points) << endl;
+    sujeito1->print_expression_d();
     cout << endl;
-
+    
     return 0;
 }
