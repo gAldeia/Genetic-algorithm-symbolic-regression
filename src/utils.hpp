@@ -1,15 +1,17 @@
+//utils.hpp
 #ifndef _UTILS_H
 #define _UTILS_H
 
 
 namespace utils {
+
+    //Enums utilizados
     enum TYPE{
         VAR,
         CTE,
         FUN1,
         FUN2,
-        SIZETYPE //sizeof deve ser sempre o último elemento do enum e será
-                //utilizado para informar o tamanho do enum.
+        SIZETYPE //Tamanho do enum TYPE
     };
 
     enum FUNC1{
@@ -19,7 +21,7 @@ namespace utils {
         SIN,
         COS,
         TAN,
-        SIZEFUNC1
+        SIZEFUNC1 //Tamanho do enum FUNC1
     };
 
     enum FUNC2{
@@ -28,11 +30,15 @@ namespace utils {
         MULT,
         DIV,
         POW,
-        SIZEFUNC2
+        SIZEFUNC2 //Tamanho do enum FUNC2
     };
 
+
+    //funções solucionadoras
     double func1_solver(int F_id, double v);
     double func2_solver(int F_id, double v1, double v2);
+
+    //função de conversão
     double rad_to_degrees(double v);
 
     //funções de 2 parâmetros
@@ -49,6 +55,6 @@ namespace utils {
     double    uLn(double v);
     double   uExp(double v);
     double  uSqrt(double v);
-
 }
+
 #endif
