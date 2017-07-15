@@ -5,6 +5,7 @@
 
 #include <vector>
 
+#include "utils.hpp"
 
 class Node{
 
@@ -25,10 +26,11 @@ class Node{
         Node(bool copy = false);
         ~Node();
 
-        double eval(double x);
+        double eval(utils::DataPoint p);
         void print_node_d();
         Node *get_copy();
         int get_type();
+        void changeNumberOfSubtreesTo(int quantity);
 };
 
 #endif
