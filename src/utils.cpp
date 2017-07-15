@@ -1,10 +1,17 @@
 //utils.cpp
 #include <cmath>
 #include <iostream>
+
 #include "utils.hpp"
 
 
 namespace utils{
+
+    DataPoint::DataPoint(double x1, double x2, double y){
+        this->x[0] = x1;
+        this->x[1] = x2;
+        this->y = y;
+    }
 
 
     //=========================FUNÇÕES BINÁRIAS===========================//
