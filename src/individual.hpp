@@ -22,7 +22,7 @@ class Individual{
 
         Node *crossover(double crossover_rate, Individual parent);
         void mutation(double mutation_rate);
-        double fitness(vector< vector<double> > points);
+        double fitness(vector<utils::DataPoint> points);
         void print_expression_d();
 };
 
