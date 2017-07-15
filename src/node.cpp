@@ -4,7 +4,6 @@
 #include <iostream>
 
 #include "node.hpp"
-#include "utils.hpp"
 
 
 using namespace utils;
@@ -29,7 +28,7 @@ Node::Node(bool copy){
         }
         else if (tipo==VAR){
             
-            C.idX = 0.0;
+            C.idX = random()%2;
 
             //var tbm é folha
             left = NULL;
@@ -71,21 +70,22 @@ Node::~Node(){
         delete right;
 }
 
-double Node::eval(double x) {
+double Node::eval(DataPoint p) {
     
-    switch (tipo) {
+    switch (this->tipo) {
         case VAR:
-            C.idX = x;
-            return C.idX;
+            return C.idX == 0 ? p.x[0] : p.x[1];
         case CTE:
             return C.value;
         case FUN1:  //Função com um parâmetro
             if (left != NULL)
-                return func1_solver(C.function, left->eval(x));
+                return func1_solver(C.function, left->eval(p));
+            else if (right!=NULL)
+                return func1_solver(C.function, right->eval(p));
             else
-                return func1_solver(C.function, right->eval(x));
+                std::cout << "ERRO EVAL FUN1" << std::endl;
         case FUN2:  //Função com dois parâmetros
-            return func2_solver(C.function, left->eval(x), right->eval(x));
+            return func2_solver(C.function, left->eval(p), right->eval(p));
         default:
             std::cout << "ERRO EVAL" << std::endl;
     }
@@ -123,7 +123,7 @@ void Node::print_node_d(){
     else if (tipo==CTE)
         std::cout << this->C.value;
     else if (tipo==VAR)
-        std::cout << "x"; //na hora de imprimir, escreve x
+        C.idX == 0? std::cout << "x1" : std::cout << "x2";
     else{ //ultimo caso possivel é ser fun1
         switch(C.function){ //ln exp, sqrt
             case LN:
@@ -183,4 +183,9 @@ Node *Node::get_copy(){
 int Node::get_type(){
 
     return this->tipo;
+}
+
+void Node::changeNumberOfSubtreesTo(int quantity){
+    //essa função tem que readaptar a árvore caso seja feita uma mutação
+    //pois a aridade da função pode ter mudado.
 }
