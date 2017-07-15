@@ -3,6 +3,9 @@
 #define _UTILS_H
 
 
+#include <vector>
+
+
 namespace utils {
 
     //Enums utilizados
@@ -32,6 +35,13 @@ namespace utils {
         POW,
         SIZEFUNC2 //Tamanho do enum FUNC2
     };
+
+    typedef struct DataPoint{
+        std::vector<double> x = std::vector<double> (2, 0.0);
+        double y;
+
+        DataPoint(double x1, double x2, double y);
+    }DataPoint;
 
 
     //funções solucionadoras
