@@ -17,7 +17,7 @@ class Individual{
         double mse_value;
 
     public:
-        Individual();
+        Individual(int numberOfXs);
         ~Individual();
 
         Node *crossover(double crossover_rate, Individual parent);
