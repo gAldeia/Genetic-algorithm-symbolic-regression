@@ -93,7 +93,7 @@ namespace utils{
     double rad_to_degrees(double v) {
         
         double V = ((v*180)/(M_PI));    //Transforma o valor de entrada para graus
-        if ((V >= 360) || (V <= -360)) V = V%360;
+        if ((V >= 360) || (V <= -360)) V = (int)V%360;
         if (V < 0) V = 360+V;
         return V;
         
