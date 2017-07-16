@@ -9,15 +9,43 @@
 using namespace utils;
 
 
-Node::Node(bool copy, int numberOfXs){
+Node::Node(bool copy, bool grow, int maxDepth, int numberOfXs){
     
     if (!copy){ //verifica se o nó está sendo chamado no modo cópia.
                 //o construtor toma como padrão que o nó criado é sempre um novo
                 //nó, sendo então necessário especificar no construtor "true"
                 //para que seja criado uma cópia da árvore.
+        
+        if (grow){
+            growStyle(maxDepth, numberOfXs);
+        }
+        else {
+            fullStyle(maxDepth, numberOfXs);
+        }
+    }
+    else {
+        //aqui deve fazer operações para que o nó não exploda o programa
 
-        tipo = random() % SIZETYPE;
+        right = NULL;
+        left = NULL;
+    }
+}
 
+Node::~Node(){
+    
+    if (left)
+        delete left;
+    if (right)
+        delete right;
+}
+
+void Node::growStyle(int maxDepth, int numberOfXs){
+
+    if (maxDepth>1){
+
+        //como ainda tem tamanho livre, pode criar qualquer coisa
+        tipo = random()%SIZETYPE;
+        
         if (tipo==CTE){
             //atribui um valor de 0 a 9 para a variável
             C.value = random()%10;
@@ -41,33 +69,89 @@ Node::Node(bool copy, int numberOfXs){
             //por padrão, funções unárias terão filho só na direita. a vantagem
             //de usar só na direita é que facilita a impressão pois não 
             //precisamos tratar unário/binário diferentemente.
-            right = new Node();
+            right = new Node(false, true, maxDepth-1, numberOfXs);
             left = NULL;
         }
         else if (tipo==FUN2){
 
             C.function = random() % SIZEFUNC2;
 
-            right = new Node();
-            left = new Node();
+            right = new Node(false, true, maxDepth-1, numberOfXs);
+            left = new Node(false, true, maxDepth-1, numberOfXs);
         }
         else
-            std::cout << "ERRO CONSTRUTOR NODE" << std::endl;
+            std::cout << "ERRO GROW" << std::endl;
     }
     else {
-        //aqui deve fazer operações para que o nó não exploda o programa
 
-        right = NULL;
-        left = NULL;
+        //caso não tenha tamanho, só pode ser cte ou var.
+
+        tipo = random()%2;
+
+        if (tipo==CTE){
+            //atribui um valor de 0 a 9 para a variável
+            C.value = random()%10;
+
+            //se aqui é constante, é folha, então não terá filhos.
+            left = NULL;
+            right = NULL;
+        }
+        else if (tipo==VAR){
+            
+            C.idX = random()%numberOfXs;
+
+            //var tbm é folha
+            left = NULL;
+            right = NULL;
+        }
     }
 }
 
-Node::~Node(){
-    
-    if (left)
-        delete left;
-    if (right)
-        delete right;
+void Node::fullStyle(int maxDepth, int numberOfXs){
+    if (maxDepth>1){
+        tipo = random()%2 + 2;
+
+        if (tipo==FUN1){
+
+            C.function = random() % SIZEFUNC1;
+
+            //por padrão, funções unárias terão filho só na direita. a vantagem
+            //de usar só na direita é que facilita a impressão pois não 
+            //precisamos tratar unário/binário diferentemente.
+            right = new Node(false, false, maxDepth-1, numberOfXs);
+            left = NULL;
+        }
+        else if (tipo==FUN2){
+
+            C.function = random() % SIZEFUNC2;
+
+            right = new Node(false, false, maxDepth-1, numberOfXs);
+            left = new Node(false, false, maxDepth-1, numberOfXs);
+        }
+        else {
+            std::cout << "ERRO FULLSTYLE" << std::endl; 
+        }
+    }
+    else {
+        tipo = random()%2;
+
+        if (tipo==CTE){
+            //atribui um valor de 0 a 9 para a variável
+            C.value = random()%10;
+
+            //se aqui é constante, é folha, então não terá filhos.
+            left = NULL;
+            right = NULL;
+        }
+        else if (tipo==VAR){
+            
+            C.idX = random()%numberOfXs;
+
+            //var tbm é folha
+            left = NULL;
+            right = NULL;
+        }
+    }
 }
 
 double Node::eval(DataPoint p) {
