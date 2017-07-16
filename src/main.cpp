@@ -14,25 +14,30 @@ int main(){
 
     srand(time(NULL));
 
-    vector< vector<double> > points;
-    vector<double> x;
-    vector<double> y;
+    //leitura da entrada
+    vector<utils::DataPoint> points;
     
-    double temp;
-    Individual *sujeito1 = new Individual();
+    double x1, x2;
+    double y;
 
-
-    for (int i=0; i<2; i++){
-        cin >> temp;
-        x.push_back(temp);
-        cin >> temp;
-        y.push_back(temp);
+    for (int i=0; i<1; i++){
+        cin >> x1;
+        cin >> y;
+        vector<double> x = {x1};
+        utils::DataPoint p(x, y);
+        cout << p.x[0] << endl;
+        points.push_back(p);
     }
-    
-    points.push_back(x);
-    points.push_back(y);
-    
+
+    //criação de um individuo para testes
+    //obs: o construtor recebe o número de x que a entrada contém, para que
+    //o node seja criado conténdo esse mesmo número, incluindo dessa forma
+    //todos os possíveis x na criação da árvore.
+    Individual *sujeito1 = new Individual(1);
+
+    //testa o fitness
     cout << sujeito1->fitness(points) << endl;
+    //imprime a expressão para consulta
     sujeito1->print_expression_d();
     cout << endl;
     
