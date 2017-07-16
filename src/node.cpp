@@ -2,183 +2,170 @@
 #include <random>
 #include <cstdlib>
 #include <iostream>
-
 #include "node.hpp"
 
 
 using namespace utils;
 
 
-Node::Node(bool copy, bool grow, int maxDepth, int numberOfXs){
-    
-    if (!copy){ //verifica se o nó está sendo chamado no modo cópia.
-                //o construtor toma como padrão que o nó criado é sempre um novo
-                //nó, sendo então necessário especificar no construtor "true"
-                //para que seja criado uma cópia da árvore.
-        
-        if (grow){
-            growStyle(maxDepth, numberOfXs);
-        }
-        else {
-            fullStyle(maxDepth, numberOfXs);
-        }
-    }
-    else {
-        //aqui deve fazer operações para que o nó não exploda o programa
+    //--------------------CONSTRUTOR E DESTRUTOR--------------------------//
 
-        right = NULL;
-        left = NULL;
-    }
+Node::Node(bool grow, int maxDepth, int numberOfXs){
+
+    //construtor, que recebe se deve construir a árvore no modo growStyle
+    //(caso falso, constrói no modo fullStyle). maxDepth determina a pro-
+    //fundidade máxima que a subárvore pode assumir. numberOfXs é nece-
+    //sário para que o construtor saiba quantas variáveis existem e possa
+    //criar este mesmo número de diferentes variáveis nas folhas.
+    //por padrão, grow = false, maxDepth = 0, numberOfXs = 1.
+
+    this->numberOfXs = numberOfXs;
+    this->maxDepth = maxDepth;
+
+    if (grow) growStyle();
+    else      fullStyle();
 }
 
 Node::~Node(){
     
-    if (left)
-        delete left;
-    if (right)
-        delete right;
+    //destrutor, que recursivamente deleta o nó e todos os seus filhos.
+
+    if (left)  delete left;
+    if (right) delete right;
 }
 
-void Node::growStyle(int maxDepth, int numberOfXs){
+
+    //------------ESTILOS DE CRIAÇÃO DE ÁRVORES DE EXPRESSÕES-------------//
+
+void Node::growStyle(){
+
+    //estilo de crescimento aleatório, que funciona da seguinte forma:
+    //enquanto ainda há profundidade para as subárvores, não restringe
+    //o tipo que o nó pode ser. Quando chega na profundidade máxima,
+    //só cria folhas.
 
     if (maxDepth>1){
-
-        //como ainda tem tamanho livre, pode criar qualquer coisa
         tipo = random()%SIZETYPE;
         
-        if (tipo==CTE){
-            //atribui um valor de 0 a 9 para a variável
-            C.value = random()%10;
-
-            //se aqui é constante, é folha, então não terá filhos.
-            left = NULL;
-            right = NULL;
-        }
-        else if (tipo==VAR){
-            
-            C.idX = random()%numberOfXs;
-
-            //var tbm é folha
-            left = NULL;
-            right = NULL;
-        }
-        else if (tipo==FUN1){
-
-            C.function = random() % SIZEFUNC1;
-
-            //por padrão, funções unárias terão filho só na direita. a vantagem
-            //de usar só na direita é que facilita a impressão pois não 
-            //precisamos tratar unário/binário diferentemente.
-            right = new Node(false, true, maxDepth-1, numberOfXs);
-            left = NULL;
-        }
-        else if (tipo==FUN2){
-
-            C.function = random() % SIZEFUNC2;
-
-            right = new Node(false, true, maxDepth-1, numberOfXs);
-            left = new Node(false, true, maxDepth-1, numberOfXs);
-        }
-        else
-            std::cout << "ERRO GROW" << std::endl;
+        if      (tipo==CTE)  makeThisCte();
+        else if (tipo==VAR)  makeThisVar();
+        else if (tipo==FUN1) makeThisFunc1(true);
+        else                 makeThisFunc2(true); //tipo==FUN2
     }
     else {
-
-        //caso não tenha tamanho, só pode ser cte ou var.
-
         tipo = random()%2;
 
-        if (tipo==CTE){
-            //atribui um valor de 0 a 9 para a variável
-            C.value = random()%10;
-
-            //se aqui é constante, é folha, então não terá filhos.
-            left = NULL;
-            right = NULL;
-        }
-        else if (tipo==VAR){
-            
-            C.idX = random()%numberOfXs;
-
-            //var tbm é folha
-            left = NULL;
-            right = NULL;
-        }
+        if (tipo==CTE) makeThisCte();
+        else           makeThisVar(); //tipo==VAR
     }
 }
 
-void Node::fullStyle(int maxDepth, int numberOfXs){
+void Node::fullStyle(){
+
+    //estilo de crescimento que gera sempre uma árvore binária completa
+    //(salvo casos onde são sorteadas funções de 1 parâmetro, tendo
+    //apenas um filho, e não dois).
+
     if (maxDepth>1){
         tipo = random()%2 + 2;
 
-        if (tipo==FUN1){
-
-            C.function = random() % SIZEFUNC1;
-
-            //por padrão, funções unárias terão filho só na direita. a vantagem
-            //de usar só na direita é que facilita a impressão pois não 
-            //precisamos tratar unário/binário diferentemente.
-            right = new Node(false, false, maxDepth-1, numberOfXs);
-            left = NULL;
-        }
-        else if (tipo==FUN2){
-
-            C.function = random() % SIZEFUNC2;
-
-            right = new Node(false, false, maxDepth-1, numberOfXs);
-            left = new Node(false, false, maxDepth-1, numberOfXs);
-        }
-        else {
-            std::cout << "ERRO FULLSTYLE" << std::endl; 
-        }
+        if (tipo==FUN1) makeThisFunc1(false);
+        else            makeThisFunc2(false); //tipo==FUN2 
     }
     else {
         tipo = random()%2;
 
-        if (tipo==CTE){
-            //atribui um valor de 0 a 9 para a variável
-            C.value = random()%10;
-
-            //se aqui é constante, é folha, então não terá filhos.
-            left = NULL;
-            right = NULL;
-        }
-        else if (tipo==VAR){
-            
-            C.idX = random()%numberOfXs;
-
-            //var tbm é folha
-            left = NULL;
-            right = NULL;
-        }
+        if (tipo==CTE) makeThisCte();
+        else           makeThisVar(); //tipo==VAR
     }
 }
 
+
+    //----------FUNÇÕES AJUSTADORAS DE VALORES DA ÁRVORE------------------//
+
+void Node::makeThisVar(){
+
+    //função que ajusta valores do nó para ser uma variável. Sorteia um
+    //índice de x para os n numberOfXs, deleta e "nulla" os ponteiros.
+
+    C.idX = random()%numberOfXs;
+
+    if (left)  delete left;
+    if (right) delete right;
+
+    left = NULL;
+    right = NULL;
+}
+
+void Node::makeThisCte(){
+
+    //ajusta os valores do nó para ser uma constante. Atribui um valor de
+    // 0 a 9 para o nó, deleta e "nulla" os ponteiros.
+
+    C.value = random()%10;
+
+    if (left)  delete left;
+    if (right) delete right;
+
+    left = NULL;
+    right = NULL;
+}
+
+void Node::makeThisFunc1(bool grow){
+
+    //ajusta os valores do nó para ser uma função de 1 parâmetro. A fun-
+    //ção é sorteada dentro do utils, e por padrão o filho criado será na 
+    //direita (isso não faria diferença aqui se fosse na esquerda), mas
+    //as funções do programa estão preparadas para lidar com casos onde
+    //a subárvore foi criada no lado esquerdo. chama recursivamente
+    //o construtor para que a árvore não fique incompleta.
+
+    C.function = random() % SIZEFUNC1;
+
+    right = new Node(grow, maxDepth-1, numberOfXs);
+    left = NULL;
+}
+
+void Node::makeThisFunc2(bool grow){
+
+    //ajusta os valores do nó para ser uma função de 2 parâmetros. A
+    //função é sorteada dentro do utils. Chama recursivamente o cons-
+    //trutor dos dois filhos para que a árvore não fique incompleta.
+
+    C.function = random() % SIZEFUNC2;
+
+    right = new Node(grow, maxDepth-1, numberOfXs);
+    left  = new Node(grow, maxDepth-1, numberOfXs);
+}
+
+
+
+    //----------------FUNÇÕES DE UTILIDADE GERAL--------------------------//
+
 double Node::eval(DataPoint p) {
     
-    switch (this->tipo) {
-        case VAR:
-            return p.x[C.idX];
-        case CTE:
-            return C.value;
-        case FUN1:  //Função com um parâmetro
-            if (left != NULL)
-                return func1_solver(C.function, left->eval(p));
-            else if (right!=NULL)
-                return func1_solver(C.function, right->eval(p));
-            else
-                std::cout << "ERRO EVAL FUN1" << std::endl;
-        case FUN2:  //Função com dois parâmetros
-            return func2_solver(C.function, left->eval(p), right->eval(p));
-        default:
-            std::cout << "ERRO EVAL" << std::endl;
-    }
+    //calcula o valor que a expressão retorna quando tem como valores
+    //para suas n variáveis os valores do DataPoint.x (vector<double>).
+
+    if (this->tipo==VAR){
+        return p.x[C.idX];
+    } else if(this->tipo==CTE) {
+        return C.value;
+    } else if (this->tipo==FUN1){
+        if (left)
+            return func1_solver(C.function, left->eval(p));
+        else
+            return func1_solver(C.function, right->eval(p));
+    } else //this->tipo==FUN2
+        return func2_solver(C.function, left->eval(p), right->eval(p));
 }
 
 void Node::print_node_d(){
     
+    //imprime a árvore recursivamente.
+
     if (tipo==FUN2){
-        std::cout << "(";
+        std::cout << " (";
         left->print_node_d();
 
         switch(C.function){
@@ -197,79 +184,78 @@ void Node::print_node_d(){
                 case POW:
                     std::cout << "^";
                     break;
-                default:
-                    std::cout << "ERRO PRINT NODE D FUN2";
-                    break;
-            }
+        }
+
         right->print_node_d();
-        std::cout << ")";
+        std::cout << ") ";
     }
     else if (tipo==CTE)
         std::cout << this->C.value;
     else if (tipo==VAR)
         std::cout << "x" << C.idX;
-    else{ //ultimo caso possivel é ser fun1
-        switch(C.function){ //ln exp, sqrt
+    else{ //tipo==FUN2
+        switch(C.function){
             case LN:
-                std::cout << "ln(";
+                std::cout << " ln(";
                 break;
             case EXP:
-                std::cout <<"(e^";
+                std::cout <<" (e^";
                 break;
             case SQRT:
-                std::cout  << "sqrt(";
+                std::cout  << " sqrt(";
                 break;
             case SIN:
-                std::cout << "sin(";
+                std::cout << " sin(";
                 break;
             case COS:
-                std::cout << "cos(";
+                std::cout << " cos(";
                 break;
             case TAN:
-                std::cout << "tan(";
-                break;
-            default:
-                std::cout << "ERRO PRINT NODE D FUN1";
+                std::cout << " tan(";
                 break;
         }
         right->print_node_d();
-        std::cout << ")";
+        std::cout << ") ";
     }
 }
 
 Node *Node::get_copy(){
     
-    Node *aux = new Node(true); //os ponteiros para os filhos dele
-                                //já estarão com valor NULL
-    aux->tipo = this->tipo;
+    //cria um novo Node, deleta seus filhos e ajusta todos os seus parâ-
+    //metros para que seja um ponteiro para uma cópia idêntica do nó que
+    //invocou o método.
 
-    if (this->tipo==VAR){
+    Node *aux = new Node(false, 0, 1); 
+
+    aux->tipo = this->tipo;
+    aux->numberOfXs = this->numberOfXs;
+    aux->maxDepth = this->maxDepth;
+
+    if (tipo==VAR){
         aux->C.idX = this->C.idX;
     }
-    else if (this->tipo==CTE){
+    else if (tipo==CTE){
         aux->C.value = this->C.value;
     }
-    else if (this->tipo==FUN1){ //se for função de um parâmetro
+    else if (tipo==FUN1){
         aux->C.function = this->C.function;
-        aux->right = this->right->get_copy();
+
+        if (right) aux->right = this->right->get_copy();
+        else       aux->left  = this->left->get_copy();
     }
-    else if (this->tipo==FUN2){ //se for função de um parâmetro
+    else { //tipo==FUN2
         aux->C.function = this->C.function;
-        aux->left = this->left->get_copy();
+
+        aux->left  = this->left->get_copy();
         aux->right = this->right->get_copy();
-    }
-    else{
-        std::cout << "ERRO GET COPY" << std::endl;
     }
     return aux;
 }
 
 int Node::get_type(){
 
-    return this->tipo;
-}
+    //retorna o tipo do nó. útil para funções da classe individual, já
+    //que o tipo é uma variável privada.
 
-void Node::changeNumberOfSubtreesTo(int quantity){
-    //essa função tem que readaptar a árvore caso seja feita uma mutação
-    //pois a aridade da função pode ter mudado.
+    return this->tipo;
 }
