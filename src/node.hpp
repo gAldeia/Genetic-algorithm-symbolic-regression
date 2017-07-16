@@ -23,7 +23,7 @@ class Node{
         Node *right;
 
     public:
-        Node(bool copy = false);
+        Node(bool copy = false, int numberOfXs = 1);
         ~Node();
 
         double eval(utils::DataPoint p);
