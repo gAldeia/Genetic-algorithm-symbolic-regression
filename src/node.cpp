@@ -9,7 +9,7 @@
 using namespace utils;
 
 
-Node::Node(bool copy){
+Node::Node(bool copy, int numberOfXs){
     
     if (!copy){ //verifica se o nó está sendo chamado no modo cópia.
                 //o construtor toma como padrão que o nó criado é sempre um novo
@@ -28,7 +28,7 @@ Node::Node(bool copy){
         }
         else if (tipo==VAR){
             
-            C.idX = random()%2;
+            C.idX = random()%numberOfXs;
 
             //var tbm é folha
             left = NULL;
@@ -74,7 +74,7 @@ double Node::eval(DataPoint p) {
     
     switch (this->tipo) {
         case VAR:
-            return C.idX == 0 ? p.x[0] : p.x[1];
+            return p.x[C.idX];
         case CTE:
             return C.value;
         case FUN1:  //Função com um parâmetro
@@ -123,7 +123,7 @@ void Node::print_node_d(){
     else if (tipo==CTE)
         std::cout << this->C.value;
     else if (tipo==VAR)
-        C.idX == 0? std::cout << "x1" : std::cout << "x2";
+        std::cout << "x" << C.idX;
     else{ //ultimo caso possivel é ser fun1
         switch(C.function){ //ln exp, sqrt
             case LN:
