@@ -7,9 +7,17 @@
 
 namespace utils{
 
-    DataPoint::DataPoint(double x1, double x2, double y){
-        this->x[0] = x1;
-        this->x[1] = x2;
+    DataPoint::DataPoint(std::vector<double> x, double y = 0.0){
+        
+        if (x.size()==0){
+            this->x.push_back(0.0);
+        }
+        else {
+            for(int i=0; i<x.size(); i++){
+                this->x.push_back(x.at(i));
+            }
+        }
+
         this->y = y;
     }
 
