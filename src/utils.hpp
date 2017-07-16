@@ -37,10 +37,10 @@ namespace utils {
     };
 
     typedef struct DataPoint{
-        std::vector<double> x = std::vector<double> (2, 0.0);
+        std::vector<double> x;
         double y;
 
-        DataPoint(double x1, double x2, double y);
+        DataPoint(std::vector<double> x, double y);
     }DataPoint;
 
 
