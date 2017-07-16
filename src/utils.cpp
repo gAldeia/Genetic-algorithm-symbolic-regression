@@ -84,11 +84,11 @@ namespace utils{
     //Converter radianos em graus para poder utilizar as funções trigonométricas
     double rad_to_degrees(double v) {
         
-        double V = ((v*180)/(M_PI));
-        while (V > 360) V -= 360;
-        while (V < -360) V += 360;
-        if (V < 0) V = 360-V;
+        double V = ((v*180)/(M_PI));    //Transforma o valor de entrada para graus
+        if ((V >= 360) || (V <= -360)) V = V%360;
+        if (V < 0) V = 360+V;
         return V;
+        
     }
 
     //Função Seno
