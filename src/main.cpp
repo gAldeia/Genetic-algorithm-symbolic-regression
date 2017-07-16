@@ -44,7 +44,13 @@ int main(){
     cout << sujeito2->fitness(points) << endl;
     //imprime a expressão para consulta
     sujeito2->print_expression_d();
-    cout << endl;
+    cout << endl << endl;
+
+    Node *sujeito3 = sujeito2->expression->get_copy();
+    delete sujeito2;
     
+    sujeito3->print_node_d();
+    cout << endl;
+
     return 0;
 }
