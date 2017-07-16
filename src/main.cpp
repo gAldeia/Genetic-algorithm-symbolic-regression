@@ -33,12 +33,17 @@ int main(){
     //obs: o construtor recebe o número de x que a entrada contém, para que
     //o node seja criado conténdo esse mesmo número, incluindo dessa forma
     //todos os possíveis x na criação da árvore.
-    Individual *sujeito1 = new Individual(1);
-
+    Individual *sujeito1 = new Individual(false, 5, 1);
+    Individual *sujeito2 = new Individual(true, 5, 1);
     //testa o fitness
     cout << sujeito1->fitness(points) << endl;
     //imprime a expressão para consulta
     sujeito1->print_expression_d();
+    cout << endl << endl;
+
+    cout << sujeito2->fitness(points) << endl;
+    //imprime a expressão para consulta
+    sujeito2->print_expression_d();
     cout << endl;
     
     return 0;
