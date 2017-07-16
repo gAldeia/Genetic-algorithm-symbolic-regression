@@ -13,10 +13,11 @@ using namespace std;
 class Individual{
     
     private:
-        Node *expression;
         double mse_value;
 
     public:
+        Node *expression;
+
         Individual(bool grow = false, int maxDepth = 3, int numberOfXs = 1);
         ~Individual();
 
