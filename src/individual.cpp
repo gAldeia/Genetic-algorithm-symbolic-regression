@@ -8,7 +8,7 @@
 
 
 Individual::Individual(bool grow, int maxDepth, int numberOfXs){
-    expression = new Node(false, grow, maxDepth, numberOfXs);
+    expression = new Node(grow, maxDepth, numberOfXs);
 }
 
 Individual::~Individual(){
@@ -16,7 +16,7 @@ Individual::~Individual(){
 }
 
 Node *Individual::crossover(double crossover_rate, Individual parent){
-
+    //falta implementar aqui
 }
 
 void Individual::mutation(double mutation_rate){
@@ -27,9 +27,8 @@ double Individual::fitness(std::vector<utils::DataPoint> points){
    
     double mse = 0.0;
     
-    for(int i=0; i<points.size(); i++){
+    for(int i=0; i<points.size(); i++)
         mse += utils::uPow((expression->eval(points[i])-points[i].y ), 2);
-    }
     
     this->mse_value = utils::uSqrt(mse/(double)points.size());
     
