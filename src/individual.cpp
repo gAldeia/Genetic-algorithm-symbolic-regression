@@ -7,8 +7,8 @@
 #include "utils.hpp"
 
 
-Individual::Individual(int numberOfXs){
-    expression = new Node(false, numberOfXs);
+Individual::Individual(bool grow, int maxDepth, int numberOfXs){
+    expression = new Node(false, grow, maxDepth, numberOfXs);
 }
 
 Individual::~Individual(){
