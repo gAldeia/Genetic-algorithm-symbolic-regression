@@ -23,14 +23,19 @@ class Node{
         Node *right;
 
     public:
-        Node(bool copy = false, int numberOfXs = 1);
+        Node(bool copy = false, bool grow = true, int maxDepth = 3, int numberOfXs = 1);
         ~Node();
 
-        double eval(utils::DataPoint p);
+        void growStyle(int maxDepth, int numberOfXs);
+        void fullStyle(int maxDepth, int numberOfXs);
         void print_node_d();
+
         Node *get_copy();
         int get_type();
+
         void changeNumberOfSubtreesTo(int quantity);
+
+        double eval(utils::DataPoint p);
 };
 
 #endif
