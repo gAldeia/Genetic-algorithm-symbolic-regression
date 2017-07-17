@@ -90,9 +90,6 @@ void Node::makeThisVar(){
 
     C.idX = random()%numberOfXs;
 
-    if (left)  delete left;
-    if (right) delete right;
-
     left = NULL;
     right = NULL;
 }
@@ -103,9 +100,6 @@ void Node::makeThisCte(){
     // 0 a 9 para o nó, deleta e "nulla" os ponteiros.
 
     C.value = random()%10;
-
-    if (left)  delete left;
-    if (right) delete right;
 
     left = NULL;
     right = NULL;
