@@ -41,6 +41,7 @@ class Node{
         Node * get_copy();
         int    get_type();
         void   print_node_d();
+        void   println_node_d();
         double eval(DataPoint p);
 };
 
