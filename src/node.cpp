@@ -213,6 +213,11 @@ void Node::print_node_d(){
     }
 }
 
+void Node::println_node_d(){
+    print_node_d();
+    std::cout << std::endl;
+}
+
 Node *Node::get_copy(){
     
     //cria um novo Node, deleta seus filhos e ajusta todos os seus parâ-
