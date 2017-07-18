@@ -5,7 +5,7 @@
 
 #include "utils.hpp"
 #include "individual.hpp"
-
+#include "GP.hpp"
 
 using namespace std;
 
@@ -29,6 +29,10 @@ int main(){
         points.push_back(p);
     }
 
+    GP *soraia = new GP(10, 3, 1);
+    soraia->print_GP_d();
+
+    /*
     //criação de um individuo para testes
     //obs: o construtor recebe o número de x que a entrada contém, para que
     //o node seja criado conténdo esse mesmo número, incluindo dessa forma
@@ -51,6 +55,6 @@ int main(){
     
     sujeito3->print_node_d();
     cout << endl;
-
+    */
     return 0;
 }
