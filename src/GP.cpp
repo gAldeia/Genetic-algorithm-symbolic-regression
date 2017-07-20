@@ -22,13 +22,9 @@ GP::~GP(){
 
 void GP::ramped_halfhalf(){
 
-    for (int i=0; i<popSize; i++){
-        if (i%2==0)
-            population.push_back(new Individual(true, maxDepth, numberOfXs));
-        else
-            population.push_back(new Individual(false, maxDepth, numberOfXs));
-        if (i % (popSize/5)==0)
-            this->maxDepth= this->maxDepth + 1;
+    for (int i=1; i< (popSize+1); i++){
+        population.push_back(new Individual(i%2==0, maxDepth, numberOfXs));
+        if (i % (popSize/5)==0) this->maxDepth= this->maxDepth + 1;
     }
 }
     
