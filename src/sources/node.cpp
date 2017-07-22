@@ -2,7 +2,7 @@
 #include <random>
 #include <cstdlib>
 #include <iostream>
-#include "node.hpp"
+#include "../headers/node.hpp"
 
 
 using namespace utils;
