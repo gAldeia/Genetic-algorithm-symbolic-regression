@@ -33,7 +33,7 @@ int main() {
     std::cout << "\nFuncao de quantas variaveis?\n";
     std::cin >> n_var;
 
-    std::ifstream DATA ("data.csv");
+    std::ifstream DATA ("./input/data.csv");
     if (!(DATA.is_open())) {
         std::cout << "ERROR: File Open\nPlease, close the file and try again.\n" << std::endl;
     }
