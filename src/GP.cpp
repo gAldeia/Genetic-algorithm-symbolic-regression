@@ -35,3 +35,17 @@ void GP::print_GP_d(){
         std::cout << std::endl;
     }
 }
+
+
+void GP::print_GP_fitness_d(){
+    for (int i=0; i<popSize; i++){
+        population[i]->print_fitness_d();
+    }
+}
+
+
+void GP::calculate_fitness(std::vector<utils::DataPoint> points){
+    for (int i=0; i<popSize; i++){
+        population[i]->fitness(points);
+    }
+}
