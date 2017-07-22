@@ -38,3 +38,7 @@ double Individual::fitness(std::vector<utils::DataPoint> points){
 void Individual::print_expression_d(){
     expression->print_node_d();
 }
+
+void Individual::print_fitness_d(){
+    std::cout << mse_value << endl;
+}
