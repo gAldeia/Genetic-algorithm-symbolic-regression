@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "GP.hpp"
+#include "./headers/GP.hpp"
 #include <string>
 #include <cstring>
 #include <cstdlib>
