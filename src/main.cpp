@@ -1,60 +1,109 @@
-//main.cpp
 #include <iostream>
-#include <cstdlib>
+#include <fstream>
 #include <vector>
-
-#include "utils.hpp"
-#include "individual.hpp"
 #include "GP.hpp"
+#include <string>
+#include <cstring>
+#include <cstdlib>
+#include <sstream>
 
-using namespace std;
 
+int main() {
 
-int main(){
+    int i, j, n, n_var, v_size;
+    double number;
 
-    srand(time(NULL));
-
-    //leitura da entrada
-    vector<utils::DataPoint> points;
-    
-    double x1, x2;
+    std::vector<double> x;
     double y;
+    std::vector<utils::DataPoint> points;
 
-    for (int i=0; i<1; i++){
-        cin >> x1;
-        cin >> y;
-        vector<double> x = {x1};
-        utils::DataPoint p(x, y);
-        cout << p.x[0] << endl;
-        points.push_back(p);
+    std::string next;
+    std::string value;
+
+    /********************** RÓTULOS **********************/
+    std::string labels;
+    bool label;
+    char lab;
+    std::cout << "O arquivo contem rotulos?\n(S ou N)\n";
+    std::cin >> lab;
+    if ((lab == 'S')||(lab == 's')) label = true;
+    else label = false;     // Caso a resposta seja outra
+    /*****************************************************/
+
+    std::cout << "\nFuncao de quantas variaveis?\n";
+    std::cin >> n_var;
+
+    std::ifstream DATA ("data.csv");
+    if (!(DATA.is_open())) {
+        std::cout << "ERROR: File Open\nPlease, close the file and try again.\n" << std::endl;
     }
 
-    GP *soraia = new GP(10, 3, 1);
-    soraia->print_GP_d();
 
-    /*
-    //criação de um individuo para testes
-    //obs: o construtor recebe o número de x que a entrada contém, para que
-    //o node seja criado conténdo esse mesmo número, incluindo dessa forma
-    //todos os possíveis x na criação da árvore.
-    Individual *sujeito1 = new Individual(false, 5, 1);
-    Individual *sujeito2 = new Individual(true, 5, 1);
-    //testa o fitness
-    cout << sujeito1->fitness(points) << endl;
-    //imprime a expressão para consulta
-    sujeito1->print_expression_d();
-    cout << endl << endl;
+    while (DATA.good()) {
 
-    cout << sujeito2->fitness(points) << endl;
-    //imprime a expressão para consulta
-    sujeito2->print_expression_d();
-    cout << endl << endl;
+        if (label) {                        //////////////////////////////
+            getline(DATA, labels, '\n');    // Eliminar linha de labels //
+            label = false;                  //        (caso haja)       //
+        }                                   //////////////////////////////
 
-    Node *sujeito3 = sujeito2->expression->get_copy();
-    delete sujeito2;
-    
-    sujeito3->print_node_d();
-    cout << endl;
-    */
+        getline(DATA, value, ' ');
+        std::stringstream(value) >> y;
+
+        value = "";
+
+        for (i=0; i<n_var-1; i++) {
+            getline(DATA, value, ' ');
+            std::stringstream(value) >> number;
+            x.push_back(number);
+            value = "";
+        }
+
+        getline(DATA, next, '\n');
+        std::stringstream(next) >> number;
+        x.push_back(number);
+
+        next = "";
+
+        utils::DataPoint point (x,y);
+
+        points.push_back(point);
+
+        x.resize(0);
+
+        std::cout << "\n";
+
+    }
+
+    DATA.close();
+
+
+    /******************** TESTES ********************/
+
+    std::cout << "Y\t";
+    for (j=1; j<=points[0].x.size(); j++) {
+
+        std::cout << "x" << j << "\t";
+
+    }
+    std::cout << "\n";
+
+
+    for (i=0; i<points.size()-1; i++) {
+
+        std::cout << points[i].y << "\t";
+        for (j=0; j<(points[i].x).size(); j++) {
+            std::cout << points[i].x[j] << "\t";
+        }
+        std::cout << "\n";
+    }
+
+    /***********************************************/
+    GP population(100, 2, n_var);
+
+    population.print_GP_d();
+    population.calculate_fitness(points);
+    population.print_GP_fitness_d();
+
     return 0;
+
 }
