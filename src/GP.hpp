@@ -19,7 +19,10 @@ class GP {
         GP(int popSize = 0, int maxDepth = 2, int numberOfXs = 1);
         ~GP();
 
+        void calculate_fitness(std::vector<utils::DataPoint> points);
+
         void print_GP_d();
+        void print_GP_fitness_d();
 };
 
 #endif
