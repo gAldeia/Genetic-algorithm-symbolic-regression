@@ -1,5 +1,5 @@
 //GP.cpp
-#include "GP.hpp"
+#include "../headers/GP.hpp"
 
 #include <cstdlib>
 #include <iostream>
