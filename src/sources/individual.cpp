@@ -3,8 +3,8 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "individual.hpp"
-#include "utils.hpp"
+#include "../headers/individual.hpp"
+#include "../headers/utils.hpp"
 
 
 Individual::Individual(bool grow, int maxDepth, int numberOfXs){
