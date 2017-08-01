@@ -6,8 +6,8 @@ GA-Symbolic-Regression.exe:	main.o	individual.o	utils.o	node.o	GP.o
 	g++	-o	GA-Symbolic-Regression.exe	main.o	individual.o	utils.o	node.o	GP.o	-std=c++11
 
 
-main.o:	main.cpp
-	g++	-c	main.cpp	-std=c++11
+main.o:	./sources/main.cpp
+	g++	-c	./sources/main.cpp	-std=c++11
 
 individual.o:	./sources/individual.cpp
 	g++	-c	./sources/individual.cpp	-std=c++11
