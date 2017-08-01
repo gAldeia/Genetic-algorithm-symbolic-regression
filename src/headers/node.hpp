@@ -3,6 +3,7 @@
 #define _NODE_H
 
 #include <vector>
+
 #include "utils.hpp"
 
 
@@ -26,23 +27,31 @@ class Node{
         Node *left;
         Node *right;
 
-        void makeThisVar();
-        void makeThisCte();
-        void makeThisFunc1(bool grow);
-        void makeThisFunc2(bool grow);
-
-        void growStyle();
+        void growStyle();    //métodos de criação de árvore
         void fullStyle();        
 
     public:
         Node(bool grow = true, int maxDepth = 0, int numberOfXs = 1);
         ~Node();
 
-        Node * get_copy();
+        Node * get_copy();  //métodos para acessar membros internos da classe
+        Node * get_left();
+        Node * get_right();
         int    get_type();
-        void   print_node_d();
+
+        void   set_left(Node *nLeft);    //métodos para modificar os membros
+        void   set_right(Node *nRight);  //internos da classe
+
+        void makeThisVar();            //métodos que ajustam o comportamento
+        void makeThisCte();            //e atributos do nó
+        void makeThisFunc1(bool grow);
+        void makeThisFunc2(bool grow);
+        void copyInformation(Node *original);
+
+        void   print_node_d();   //métodos de debug
         void   println_node_d();
-        double eval(DataPoint p);
+
+        double eval(DataPoint p); //métodos que retorna o valor da expressão
 };
 
 #endif
