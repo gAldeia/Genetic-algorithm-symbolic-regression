@@ -2,6 +2,7 @@
 #include <random>
 #include <cstdlib>
 #include <iostream>
+
 #include "../headers/node.hpp"
 
 
@@ -21,6 +22,9 @@ Node::Node(bool grow, int maxDepth, int numberOfXs){
 
     this->numberOfXs = numberOfXs;
     this->maxDepth = maxDepth;
+
+    right = NULL;
+    left = NULL;
 
     if (grow) growStyle();
     else      fullStyle();
@@ -88,7 +92,12 @@ void Node::makeThisVar(){
     //função que ajusta valores do nó para ser uma variável. Sorteia um
     //índice de x para os n numberOfXs, deleta e "nulla" os ponteiros.
 
+    tipo = VAR;
+
     C.idX = random()%numberOfXs;
+
+    if (left) delete left;
+    if (right) delete right;
 
     left = NULL;
     right = NULL;
@@ -99,7 +108,12 @@ void Node::makeThisCte(){
     //ajusta os valores do nó para ser uma constante. Atribui um valor de
     // 0 a 9 para o nó, deleta e "nulla" os ponteiros.
 
+    tipo = CTE;
+
     C.value = random()%10;
+
+    if (left) delete left;
+    if (right) delete right;
 
     left = NULL;
     right = NULL;
@@ -114,9 +128,14 @@ void Node::makeThisFunc1(bool grow){
     //a subárvore foi criada no lado esquerdo. chama recursivamente
     //o construtor para que a árvore não fique incompleta.
 
+    tipo = FUN1;
+
     C.function = random() % SIZEFUNC1;
 
-    right = new Node(grow, maxDepth-1, numberOfXs);
+    if (!right)
+        right = new Node(grow, maxDepth-1, numberOfXs);
+    if (left) delete left;    
+    
     left = NULL;
 }
 
@@ -126,13 +145,30 @@ void Node::makeThisFunc2(bool grow){
     //função é sorteada dentro do utils. Chama recursivamente o cons-
     //trutor dos dois filhos para que a árvore não fique incompleta.
 
+    tipo = FUN2;
+
     C.function = random() % SIZEFUNC2;
 
-    right = new Node(grow, maxDepth-1, numberOfXs);
-    left  = new Node(grow, maxDepth-1, numberOfXs);
+    if (!right)
+        right = new Node(grow, maxDepth-1, numberOfXs);
+    if (!left)
+        left  = new Node(grow, maxDepth-1, numberOfXs);
 }
 
+void Node::copyInformation(Node *original){
+    original->tipo = this->tipo;
+    original->numberOfXs = this->numberOfXs;
+    original->maxDepth = this->maxDepth;
 
+    if (tipo==VAR)
+        original->C.idX = this->C.idX;
+    else if (tipo==CTE)
+        original->C.value = this->C.value;
+    else if (tipo==FUN1)
+        original->C.function = this->C.function;
+    else //tipo==FUN2
+        original->C.function = this->C.function;
+}
 
     //----------------FUNÇÕES DE UTILIDADE GERAL--------------------------//
 
@@ -159,7 +195,7 @@ void Node::print_node_d(){
     //imprime a árvore recursivamente.
 
     if (tipo==FUN2){
-        std::cout << " (";
+        std::cout << "(";
         left->print_node_d();
 
         switch(C.function){
@@ -181,7 +217,7 @@ void Node::print_node_d(){
         }
 
         right->print_node_d();
-        std::cout << ") ";
+        std::cout << ")";
     }
     else if (tipo==CTE)
         std::cout << this->C.value;
@@ -190,30 +226,33 @@ void Node::print_node_d(){
     else{ //tipo==FUN2
         switch(C.function){
             case LN:
-                std::cout << " ln(";
+                std::cout << "ln(";
                 break;
             case EXP:
-                std::cout <<" (e^";
+                std::cout <<"(e^";
                 break;
             case SQRT:
-                std::cout  << " sqrt(";
+                std::cout  << "sqrt(";
                 break;
             case SIN:
-                std::cout << " sin(";
+                std::cout << "sin(";
                 break;
             case COS:
-                std::cout << " cos(";
+                std::cout << "cos(";
                 break;
             case TAN:
-                std::cout << " tan(";
+                std::cout << "tan(";
                 break;
         }
         right->print_node_d();
-        std::cout << ") ";
+        std::cout << ")";
     }
 }
 
 void Node::println_node_d(){
+
+    //quebra uma linha após imprimir a expressão
+
     print_node_d();
     std::cout << std::endl;
 }
@@ -257,4 +296,24 @@ int Node::get_type(){
     //que o tipo é uma variável privada.
 
     return this->tipo;
+}
+
+void Node::set_right(Node *nRight){
+    if (right)
+        delete right;
+    right = nRight;
+}
+
+void Node::set_left(Node *nLeft){
+    if (left)
+        delete left;
+    left = nLeft;
+}
+
+Node *Node::get_right(){
+    return this->right;
+}
+
+Node *Node::get_left(){
+    return this->left;
 }
