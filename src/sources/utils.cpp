@@ -1,6 +1,11 @@
 //utils.cpp
 #include <cmath>
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <cstring>
+#include <cstdlib>
+#include <sstream>
 
 #include "../headers/utils.hpp"
 
@@ -21,7 +26,61 @@ namespace utils{
         this->y = y;
     }
 
+    std::vector<DataPoint> csvToDP(bool label, int n_var) {
 
+        int i, j, n;
+        double number;
+
+        std::vector<double> x;
+        double y;
+
+        std::vector<DataPoint> points;
+
+        std::string next;
+        std::string value;
+
+        std::ifstream DATA("./input/data.csv");
+        if (!DATA.is_open()) {
+            std::cout << "ERROR openning the file\n" << std::endl;
+        }
+
+        if (label) {
+            std::string labels;
+            getline(DATA, labels, '\n');    //Eliminar linha de labels
+        }
+
+
+        while (DATA.good()) {
+            getline(DATA, value, ',');
+            std::stringstream(value) >> y;
+
+            value = "";
+
+            for (i=0; i<n_var-1; i++) {
+                getline(DATA, value, ',');
+                std::stringstream(value) >> number;
+                x.push_back(number);
+                value = "";
+            }
+
+            getline(DATA, next, '\n');
+            std::stringstream(next) >> number;
+            x.push_back(number);
+
+            next = "";
+
+            DataPoint point (x,y);
+
+            points.push_back(point);
+
+            x.resize(0);
+        }
+
+        DATA.close();
+
+        return points;
+    }
+    
     //=========================FUNÇÕES BINÁRIAS===========================//
 
 
