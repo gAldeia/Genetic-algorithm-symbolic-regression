@@ -43,6 +43,7 @@ namespace utils {
         DataPoint(std::vector<double> x, double y);
     }DataPoint;
 
+    std::vector<DataPoint> csvToDP(bool label = false, int n_var = 1); 
 
     //funções solucionadoras
     double func1_solver(int F_id, double v);
