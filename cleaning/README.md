@@ -1,6 +1,6 @@
-# Genetic Algoritm - Symbolic Regression 2.0!
+# 0.0.0 ??
 
-Pasta com a segunda implementação do Algoritmo genético.
+Pasta com uma versão alternativa do programa principal, visando melhorias.
 
 ## tree
 ```
@@ -30,4 +30,4 @@ Contém os arquivos .hpp com as definições de classes e métodos.
 Contém as implementações das classes e métodos.
 
 ### Input
-Contém arquivos responsáveis pela entrada do programa principal
+Contém algumas bases de dados para testes.
