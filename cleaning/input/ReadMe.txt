@@ -1,0 +1,1 @@
+A pasta contém várias bases de dados. Pode ser útil copiar a desejada na mesma pasta e chamá-la de "data".
