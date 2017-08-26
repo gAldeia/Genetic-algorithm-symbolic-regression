@@ -4,10 +4,6 @@
 #include <vector>
 
 #include "../headers/GP.hpp"
-#include "utils.cpp"
-#include "node.cpp"
-#include "individual.cpp"
-#include "GP.cpp"
 
 int main() {
 
@@ -68,8 +64,6 @@ int main() {
         std::cout << "\n";                          // y x1 x2 ... xn //
     }                                               ////////////////////
     /******************************************************************/
-
-    srand(time(NULL));
 
     /*
     GP population(popSize, MaxDepth, n_var);

@@ -104,12 +104,12 @@ void GP::tournament_selection_tester(std::vector<utils::DataPoint> points) {
         double fit1, fit2;
 
         do {
-            index1 = rand()% population.size();
-            index2 = rand()% Pfilhos.size();
+            index1 = rnd(0, population.size() -1);
+            index2 = rnd(0, Pfilhos.size() -1);
 
             fit1 = population[index1]->get_fitness();
             fit2 = Pfilhos[index2]->get_fitness();
-        } while ( (fit1 !=fit1) && (fit2 != fit2) );
+        } while ( fitnessValidation(fit1) && fitnessValidation(fit2) );
 
         if (fit1<fit2)
             selectedPop.push_back(population[index1]->get_copy());
@@ -135,8 +135,8 @@ void GP::tournament_selection(std::vector<utils::DataPoint> points) {
         double fit1, fit2;
 
         do {
-            index1 = rand()%(population.size());
-            index2 = rand()%(population.size());
+            index1 = rnd(0, population.size() -1);
+            index2 = rnd(0, population.size() -1);
 
             fit1 = population[index1]->get_fitness();
             fit2 = population[index2]->get_fitness();
@@ -170,7 +170,7 @@ void GP::crossover_halfhalf(double crossover_rate) {
     vector<Individual *> crossedPop;
 
     while (crossedPop.size() < popSize) {
-        crossedPop.push_back(population[rand()%popSize]->crossover(crossover_rate, population[rand()%popSize]));
+        crossedPop.push_back(population[rnd(0, popSize -1)]->crossover(crossover_rate, population[rnd(0, popSize -1)]));
     }
 
     population.clear();

@@ -42,11 +42,11 @@ Individual *Individual::crossover(double crossover_rate, Individual *parent) {
     while (thisPartition != NULL) {
         if ((thisPartition->get_left() == NULL) || (thisPartition->get_right() == NULL))
             break;
-        if (rand()%100 < crossover_rate) {
+        if (rnd(0, 100) < crossover_rate) {
             while (parentPartition != NULL) {
                 if ((parentPartition->get_left() == NULL) || (parentPartition->get_right() == NULL))
                     break;
-                if (rand()%100 < crossover_rate) {
+                if (rnd(0, 100) < crossover_rate) {
                     //é preciso ser uma cópia aqui porque o método de
                     //"setar" ponteiros deleta o ponteiro atual antes
                     //de atribuir o novo
@@ -56,11 +56,11 @@ Individual *Individual::crossover(double crossover_rate, Individual *parent) {
 
                     break;
                 }
-                parentPartition = rand()%2==1 ? parentPartition->get_right() : parentPartition->get_left();
+                parentPartition = rnd(0, 1)==1 ? parentPartition->get_right() : parentPartition->get_left();
             }
             break;
         }
-        thisPartition = rand()%2==1 ? thisPartition->get_right() : thisPartition->get_left();
+        thisPartition = rnd(0, 1)==1 ? thisPartition->get_right() : thisPartition->get_left();
     }
     delete thatParent;
     return thisParent;
@@ -78,8 +78,8 @@ void Individual::mutation(double mutation_rate) {
         partition = pilha.top();
         pilha.pop();
 
-        if (rand()%100 <= mutation_rate) {
-            switch(rand()%(utils::SIZETYPE)) {
+        if (rnd(0, 100) <= mutation_rate) {
+            switch(rnd(0, utils::SIZETYPE -1)) {
                 case VAR:
                     partition->makeThisVar();
                     break;
@@ -113,7 +113,7 @@ double Individual::fitness(std::vector<DataPoint> points) {
         this->mse_value += uPow(( (expression->eval(points[i])) - (points[i].y) ), 2);
     }
 
-    this->mse_value = uSqrt(this->mse_value/((double)points.size()));
+    this->mse_value = (double)uSqrt(uDiv(this->mse_value, ((double)points.size())));
 
     return this->mse_value;
 }

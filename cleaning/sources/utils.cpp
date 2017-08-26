@@ -7,6 +7,8 @@
 #include <cstring>
 #include <cstdlib>
 #include <sstream>
+#include <random>
+#include <cmath>
 
 #include "../headers/utils.hpp"
 
@@ -42,7 +44,7 @@ namespace utils {
 
         std::vector<DataPoint> points;
 
-        std::ifstream DATA("../input/data.csv");
+        std::ifstream DATA("./input/data.csv");
         if (!DATA.is_open()) {
             std::cout << "ERRO NOS DADOS\n" << std::endl;
         }
@@ -87,6 +89,20 @@ namespace utils {
     }
     /*********************************************************************************************/
 
+    bool fitnessValidation(double number){
+        //tentativa de eliminar os "-nan"
+        if (number<=0 || number!=number)
+            return false;
+        return true;
+    }
+
+    int rnd(int i, int f){
+        //gerador de números aleatórios
+        std::random_device generator;
+        std::uniform_int_distribution <int> uidist(i, f);
+        return uidist(generator);
+    }
+    
 
     //=========================FUNÇÕES BINÁRIAS===========================//
 
