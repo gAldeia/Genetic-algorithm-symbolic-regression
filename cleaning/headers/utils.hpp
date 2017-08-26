@@ -4,8 +4,8 @@
 #define _UTILS_H
 
 #include <vector>
-#include <ctime>
 #include <cstdlib>
+#include <random>
 
 namespace utils {
 
@@ -56,6 +56,10 @@ namespace utils {
     }DataPoint;
     /************************************************/
 
+    bool fitnessValidation(double number);
+
+    //função para um número aleatório de i a f
+    int rnd(int i, int f);
 
     ///Função para a coleta de dados a partir de um arquivo csv
     std::vector<DataPoint> csvToDP(bool label = false, int n_var = 1); // Vector contendo todos os pontos do gráfico
